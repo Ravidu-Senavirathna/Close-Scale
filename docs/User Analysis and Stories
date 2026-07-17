@@ -121,3 +121,127 @@ As a Sales Manager, I want to identify cold or stuck deals so that I can take co
 - System highlights inactive deals
 - Shows last interaction date
 - Shows responsible salesperson
+
+## 3. Marketing Executive
+
+**Description:**
+
+Responsible for generating and managing new potential customers.
+
+**Responsibilities:**
+
+- Create leads
+- Track marketing campaigns
+- Monitor lead quality
+- Transfer qualified leads to sales
+- User Stories
+- Lead Creation
+
+As a Marketing Executive, I want to create new leads so that potential customers can be tracked in the CRM.
+
+**Acceptance Criteria:**
+
+- Can enter lead information
+- Can assign lead source
+- Can update lead status
+- Lead Tracking
+
+As a Marketing Executive, I want to monitor lead progress so that I know whether marketing efforts generate valuable opportunities.
+
+**Acceptance Criteria:**
+
+- Can view converted leads
+- Can view lost leads
+- Can track lead sources
+
+## 4. Delivery Management Team
+
+**Description:**
+
+Team members who deliver products/services after a deal is won.
+
+**Responsibilities:**
+
+- Understand customer requirements
+- View customer history
+- Access previous discussions
+- User Stories
+- Customer Context
+
+As a Delivery Manager, I want to view customer history so that I can understand customer expectations before starting delivery.
+
+**Acceptance Criteria:**
+
+- Can view previous conversations
+- Can view requirements
+- Can view agreements made with customers
+- Customer Information Access
+
+As a Delivery Manager, I want access to customer details so that I can communicate effectively with customers.
+
+**Acceptance Criteria:**
+
+- Can view customer contacts
+- Can view account information
+
+## 5. Leadership / CEO / Directors
+
+**Description:**
+
+They require high-level business insights and decision-making information.
+
+**Responsibilities:**
+
+- Monitor company sales performance
+- Forecast revenue
+- Analyze business growth
+- User Stories
+- Business Dashboard
+
+As a CEO, I want to view company-wide sales metrics so that I can make strategic decisions.
+
+**Acceptance Criteria:**
+
+- View total pipeline value
+- View revenue forecast
+- View conversion rates
+- Sales Analytics
+
+As a CEO, I want to analyze sales performance so that I can understand business growth.
+
+**Acceptance Criteria:**
+
+- View monthly sales trends
+- Compare team performance
+- View customer acquisition
+
+## 6. System Administrator
+
+**Description:**
+
+Manages system security, users, and configurations.
+
+**Responsibilities:**
+
+- Create user accounts
+- Assign roles
+- Manage permissions
+- Maintain system
+- User Stories
+- User Management
+
+As a System Administrator, I want to manage user accounts so that only authorized employees can access CRM data.
+
+**Acceptance Criteria:**
+
+- Create users
+- Disable users
+- Assign roles
+- Security Management
+
+As a System Administrator, I want to control user permissions so that sensitive customer information is protected.
+
+**Acceptance Criteria:**
+
+- Different access levels
+- Role-based permissions
