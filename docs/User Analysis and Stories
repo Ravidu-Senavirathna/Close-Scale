@@ -1,0 +1,123 @@
+# Users / Actors
+
+Based on your scenario, you have 5 main user types:
+
+- Sales Representative
+- Sales Manager
+- Marketing Executive
+- Delivery Management Team
+- Leadership / CEO / Directors
+
+System Administrator (technical user)
+
+## 1. Sales Representative
+
+**Description:**
+
+The person who communicates with customers, manages leads, updates deals, and performs follow-ups.
+
+**Responsibilities:**
+
+- Manage assigned customers
+- Contact leads
+- Record calls, meetings, and emails
+- Update deal stages
+- Schedule follow-ups
+- Track personal performance
+- User Stories
+- Customer Management
+
+As a Sales Representative, I want to view customer information so that I can understand the customer's background before contacting them.
+
+**Acceptance Criteria:**
+
+- Can view company details
+- Can view contact persons
+- Can see previous interactions
+- Lead Management
+
+As a Sales Representative, I want to view my assigned leads so that I can prioritize potential customers.
+
+**Acceptance Criteria:**
+
+- Can see lead name
+- Can see lead status
+- Can filter leads by priority
+- Communication Tracking
+
+As a Sales Representative, I want to log customer interactions so that the conversation history is available for future reference.
+
+**Acceptance Criteria:**
+
+- Can record calls
+- Can add meeting notes
+- Can add email summaries
+- Activity appears in customer timeline
+- Deal Management
+
+As a Sales Representative, I want to update deal stages so that I can track the progress of my opportunities.
+
+**Acceptance Criteria:**
+
+- Can move deals between stages
+- Can update expected closing date
+- Can update deal value
+- Reminder Management
+
+As a Sales Representative, I want to receive follow-up reminders so that I do not miss customer commitments.
+
+**Acceptance Criteria:**
+
+- Can create reminders
+- System shows upcoming tasks
+- Notifications appear before deadlines
+
+## 2. Sales Manager
+
+**Description:**
+
+Responsible for supervising sales representatives, monitoring pipeline, and improving team performance.
+
+**Responsibilities:**
+
+- Assign leads and accounts
+- Monitor sales pipeline
+- Track team performance
+- Identify stuck deals
+- User Stories
+- Team Management
+
+As a Sales Manager, I want to assign leads to sales representatives so that customer opportunities are handled by the correct person.
+
+**Acceptance Criteria:**
+
+- Can assign leads
+- Can change ownership
+- Sales representative receives notification
+- Pipeline Monitoring
+
+As a Sales Manager, I want to view the sales pipeline so that I can understand the current status of opportunities.
+
+**Acceptance Criteria:**
+
+- Can view deals by stage
+- Can identify delayed deals
+- Can see expected revenue
+- Performance Tracking
+
+As a Sales Manager, I want to view sales performance reports so that I can evaluate my team's progress.
+
+**Acceptance Criteria:**
+
+- View number of leads
+- View conversion rate
+- View closed deals
+- Deal Monitoring
+
+As a Sales Manager, I want to identify cold or stuck deals so that I can take corrective action.
+
+**Acceptance Criteria:**
+
+- System highlights inactive deals
+- Shows last interaction date
+- Shows responsible salesperson
