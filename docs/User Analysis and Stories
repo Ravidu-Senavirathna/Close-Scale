@@ -245,3 +245,14 @@ As a System Administrator, I want to control user permissions so that sensitive 
 
 - Different access levels
 - Role-based permissions
+
+# User Story Summary Table
+
+|   User    |   Main Goals  |
+| :--- | :--- |
+|   Sales Representative    |   Manage customers, leads, deals, follow-ups  |
+|   Sales Manager   |   Monitor team, pipeline, performance |
+|   Marketing Executive |   Generate and track leads    |
+|   Delivery Manager    |   Access customer history and requirements    |
+|   CEO/Leadership  |   View business analytics and forecasts   |
+|   Administrator   |   Manage users and security   |
