@@ -1,0 +1,258 @@
+# Users / Actors
+
+Based on your scenario, you have 5 main user types:
+
+- Sales Representative
+- Sales Manager
+- Marketing Executive
+- Delivery Management Team
+- Leadership / CEO / Directors
+
+System Administrator (technical user)
+
+## 1. Sales Representative
+
+**Description:**
+
+The person who communicates with customers, manages leads, updates deals, and performs follow-ups.
+
+**Responsibilities:**
+
+- Manage assigned customers
+- Contact leads
+- Record calls, meetings, and emails
+- Update deal stages
+- Schedule follow-ups
+- Track personal performance
+- User Stories
+- Customer Management
+
+As a Sales Representative, I want to view customer information so that I can understand the customer's background before contacting them.
+
+**Acceptance Criteria:**
+
+- Can view company details
+- Can view contact persons
+- Can see previous interactions
+- Lead Management
+
+As a Sales Representative, I want to view my assigned leads so that I can prioritize potential customers.
+
+**Acceptance Criteria:**
+
+- Can see lead name
+- Can see lead status
+- Can filter leads by priority
+- Communication Tracking
+
+As a Sales Representative, I want to log customer interactions so that the conversation history is available for future reference.
+
+**Acceptance Criteria:**
+
+- Can record calls
+- Can add meeting notes
+- Can add email summaries
+- Activity appears in customer timeline
+- Deal Management
+
+As a Sales Representative, I want to update deal stages so that I can track the progress of my opportunities.
+
+**Acceptance Criteria:**
+
+- Can move deals between stages
+- Can update expected closing date
+- Can update deal value
+- Reminder Management
+
+As a Sales Representative, I want to receive follow-up reminders so that I do not miss customer commitments.
+
+**Acceptance Criteria:**
+
+- Can create reminders
+- System shows upcoming tasks
+- Notifications appear before deadlines
+
+## 2. Sales Manager
+
+**Description:**
+
+Responsible for supervising sales representatives, monitoring pipeline, and improving team performance.
+
+**Responsibilities:**
+
+- Assign leads and accounts
+- Monitor sales pipeline
+- Track team performance
+- Identify stuck deals
+- User Stories
+- Team Management
+
+As a Sales Manager, I want to assign leads to sales representatives so that customer opportunities are handled by the correct person.
+
+**Acceptance Criteria:**
+
+- Can assign leads
+- Can change ownership
+- Sales representative receives notification
+- Pipeline Monitoring
+
+As a Sales Manager, I want to view the sales pipeline so that I can understand the current status of opportunities.
+
+**Acceptance Criteria:**
+
+- Can view deals by stage
+- Can identify delayed deals
+- Can see expected revenue
+- Performance Tracking
+
+As a Sales Manager, I want to view sales performance reports so that I can evaluate my team's progress.
+
+**Acceptance Criteria:**
+
+- View number of leads
+- View conversion rate
+- View closed deals
+- Deal Monitoring
+
+As a Sales Manager, I want to identify cold or stuck deals so that I can take corrective action.
+
+**Acceptance Criteria:**
+
+- System highlights inactive deals
+- Shows last interaction date
+- Shows responsible salesperson
+
+## 3. Marketing Executive
+
+**Description:**
+
+Responsible for generating and managing new potential customers.
+
+**Responsibilities:**
+
+- Create leads
+- Track marketing campaigns
+- Monitor lead quality
+- Transfer qualified leads to sales
+- User Stories
+- Lead Creation
+
+As a Marketing Executive, I want to create new leads so that potential customers can be tracked in the CRM.
+
+**Acceptance Criteria:**
+
+- Can enter lead information
+- Can assign lead source
+- Can update lead status
+- Lead Tracking
+
+As a Marketing Executive, I want to monitor lead progress so that I know whether marketing efforts generate valuable opportunities.
+
+**Acceptance Criteria:**
+
+- Can view converted leads
+- Can view lost leads
+- Can track lead sources
+
+## 4. Delivery Management Team
+
+**Description:**
+
+Team members who deliver products/services after a deal is won.
+
+**Responsibilities:**
+
+- Understand customer requirements
+- View customer history
+- Access previous discussions
+- User Stories
+- Customer Context
+
+As a Delivery Manager, I want to view customer history so that I can understand customer expectations before starting delivery.
+
+**Acceptance Criteria:**
+
+- Can view previous conversations
+- Can view requirements
+- Can view agreements made with customers
+- Customer Information Access
+
+As a Delivery Manager, I want access to customer details so that I can communicate effectively with customers.
+
+**Acceptance Criteria:**
+
+- Can view customer contacts
+- Can view account information
+
+## 5. Leadership / CEO / Directors
+
+**Description:**
+
+They require high-level business insights and decision-making information.
+
+**Responsibilities:**
+
+- Monitor company sales performance
+- Forecast revenue
+- Analyze business growth
+- User Stories
+- Business Dashboard
+
+As a CEO, I want to view company-wide sales metrics so that I can make strategic decisions.
+
+**Acceptance Criteria:**
+
+- View total pipeline value
+- View revenue forecast
+- View conversion rates
+- Sales Analytics
+
+As a CEO, I want to analyze sales performance so that I can understand business growth.
+
+**Acceptance Criteria:**
+
+- View monthly sales trends
+- Compare team performance
+- View customer acquisition
+
+## 6. System Administrator
+
+**Description:**
+
+Manages system security, users, and configurations.
+
+**Responsibilities:**
+
+- Create user accounts
+- Assign roles
+- Manage permissions
+- Maintain system
+- User Stories
+- User Management
+
+As a System Administrator, I want to manage user accounts so that only authorized employees can access CRM data.
+
+**Acceptance Criteria:**
+
+- Create users
+- Disable users
+- Assign roles
+- Security Management
+
+As a System Administrator, I want to control user permissions so that sensitive customer information is protected.
+
+**Acceptance Criteria:**
+
+- Different access levels
+- Role-based permissions
+
+# User Story Summary Table
+
+|   User    |   Main Goals  |
+| :--- | :--- |
+|   Sales Representative    |   Manage customers, leads, deals, follow-ups  |
+|   Sales Manager   |   Monitor team, pipeline, performance |
+|   Marketing Executive |   Generate and track leads    |
+|   Delivery Manager    |   Access customer history and requirements    |
+|   CEO/Leadership  |   View business analytics and forecasts   |
+|   Administrator   |   Manage users and security   |
