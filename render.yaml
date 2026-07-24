@@ -1,0 +1,84 @@
+# ─────────────────────────────────────────────────────────────────
+#  Close-Scale (Altrium CRM) — Render Infrastructure as Code
+#
+#  Render reads this file automatically when you connect your repo.
+#  Docs: https://render.com/docs/blueprint-spec
+# ─────────────────────────────────────────────────────────────────
+
+databases:
+  # ── Managed PostgreSQL (free tier — expires after 90 days) ─────
+  # TIP: Replace with Supabase for a free PostgreSQL that never expires.
+  - name: closescale-db
+    databaseName: closescale
+    user: closescale_user
+    plan: free
+
+services:
+  # ── Django Backend (Daphne ASGI) ──────────────────────────────
+  - type: web
+    name: closescale-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    # Runs before EVERY deploy — migrates DB and collects static files
+    preDeployCommand: "python manage.py migrate --no-input && python manage.py collectstatic --no-input"
+    startCommand: "daphne -b 0.0.0.0 -p $PORT backend.asgi:application"
+    healthCheckPath: /api/health/
+    autoDeploy: true
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: backend.settings
+      - key: DEBUG
+        value: "False"
+      # Injected automatically from the managed DB defined above
+      - key: DATABASE_URL
+        fromDatabase:
+          name: closescale-db
+          property: connectionString
+      # Set these manually in Render Dashboard → Environment tab
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+  # ── Celery Worker ─────────────────────────────────────────────
+  - type: worker
+    name: closescale-celery
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    startCommand: "celery -A backend worker -l info --concurrency=2"
+    autoDeploy: true
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: backend.settings
+      - key: DATABASE_URL
+        fromDatabase:
+          name: closescale-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
