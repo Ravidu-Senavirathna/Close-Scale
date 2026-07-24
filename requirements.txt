@@ -31,7 +31,7 @@ django-allauth[socialaccount]==65.9.0
 cloudinary==1.42.1
 django-cloudinary-storage==0.3.0
 
-# ── Static Files (Railway — no separate Nginx needed) ─────────────
+# ── Static Files (Render — WhiteNoise serves static files, no separate Nginx needed) ──
 whitenoise==6.9.0
 
 # ── Utilities ─────────────────────────────────────────────────────
