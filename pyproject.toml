@@ -1,0 +1,7 @@
+[tool.pyrefly]
+search-paths = ["backend"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+extraPaths = ["backend"]
