@@ -66,8 +66,12 @@ INSTALLED_APPS = [
     # Third-party: tasks
     "django_celery_beat",
     # Local apps
+    "users",
     "api",
 ]
+
+# ── Custom User Model ────────────────────────────────────────────
+AUTH_USER_MODEL = "users.User"
 
 SITE_ID = 1
 
