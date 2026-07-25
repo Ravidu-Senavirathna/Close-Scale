@@ -122,69 +122,68 @@ As a Sales Manager, I want to identify cold or stuck deals so that I can take co
 - Shows last interaction date
 - Shows responsible salesperson
 
-## 3. Marketing Executive
+## 3. Project Manager
 
 **Description:**
 
-Responsible for generating and managing new potential customers.
+Responsible for managing client projects after a sales deal is won. The Project Manager reviews customer requirements, tracks project progress, and coordinates with the development team to ensure successful project delivery.
 
 **Responsibilities:**
 
-- Create leads
-- Track marketing campaigns
-- Monitor lead quality
-- Transfer qualified leads to sales
-- User Stories
-- Lead Creation
+- View customer and project information
+- Review project requirements and client discussions
+- Create and manage projects for won deals
+- Update project status
+- Assign developers to projects (optional)
+- Add project notes and milestones
+- Monitor project progress
 
-As a Marketing Executive, I want to create new leads so that potential customers can be tracked in the CRM.
-
-**Acceptance Criteria:**
-
-- Can enter lead information
-- Can assign lead source
-- Can update lead status
-- Lead Tracking
-
-As a Marketing Executive, I want to monitor lead progress so that I know whether marketing efforts generate valuable opportunities.
+As a Project Manager, I want to create a project from a won deal so that development work can begin.
 
 **Acceptance Criteria:**
 
-- Can view converted leads
-- Can view lost leads
-- Can track lead sources
+- Can create a project from a closed-won deal
+- Can enter project name and description
+- Can assign project start and end dates
+- Project is linked to the customer and deal
+- Project Progress Tracking
 
-## 4. Delivery Management Team
-
-**Description:**
-
-Team members who deliver products/services after a deal is won.
-
-**Responsibilities:**
-
-- Understand customer requirements
-- View customer history
-- Access previous discussions
-- User Stories
-- Customer Context
-
-As a Delivery Manager, I want to view customer history so that I can understand customer expectations before starting delivery.
+As a Project Manager, I want to update the project status so that everyone knows the current progress of the project.
 
 **Acceptance Criteria:**
 
-- Can view previous conversations
-- Can view requirements
-- Can view agreements made with customers
-- Customer Information Access
+- Can update project status (Not Started, In Progress, On Hold, Completed)
+- Can add progress notes
+- Status updates are visible to authorized users
+- View Customer Requirements
 
-As a Delivery Manager, I want access to customer details so that I can communicate effectively with customers.
+As a Project Manager, I want to view customer information and previous communications so that I clearly understand the client's requirements before the project starts.
 
 **Acceptance Criteria:**
 
-- Can view customer contacts
-- Can view account information
+- Can view customer details
+- Can view meeting notes and emails
+- Can view project requirements linked to the deal
+- Assign Team Members (Optional)
 
-## 5. Leadership / CEO / Directors
+As a Project Manager, I want to assign developers to a project so that responsibilities are clearly defined.
+
+**Acceptance Criteria:**
+
+- Can assign one or more developers
+- Can update assigned team members
+- Assigned members are visible in the project details
+- Project Milestone Management
+
+As a Project Manager, I want to record project milestones so that project progress can be tracked effectively.
+
+**Acceptance Criteria:**
+
+- Can add milestones
+- Can update milestone status
+- Can mark milestones as completed
+
+## 4. Leadership / CEO / Directors
 
 **Description:**
 
@@ -215,7 +214,7 @@ As a CEO, I want to analyze sales performance so that I can understand business 
 - Compare team performance
 - View customer acquisition
 
-## 6. System Administrator
+## 5. System Administrator
 
 **Description:**
 
@@ -248,11 +247,10 @@ As a System Administrator, I want to control user permissions so that sensitive 
 
 # User Story Summary Table
 
-|   User    |   Main Goals  |
-| :--- | :--- |
-|   Sales Representative    |   Manage customers, leads, deals, follow-ups  |
-|   Sales Manager   |   Monitor team, pipeline, performance |
-|   Marketing Executive |   Generate and track leads    |
-|   Delivery Manager    |   Access customer history and requirements    |
-|   CEO/Leadership  |   View business analytics and forecasts   |
-|   Administrator   |   Manage users and security   |
+| **User** | **Main Goals** |
+|:---|:---|
+| **Sales Representative** | Manage customer accounts, create and update leads, manage sales deals, record customer interactions, schedule follow-ups, and maintain strong customer relationships. |
+| **Sales Manager** | Assign leads to sales representatives, monitor team performance, oversee the sales pipeline, review conversion rates, and generate sales reports for decision-making. |
+| **Project Manager** | Create and manage projects from successfully closed deals, review customer requirements and communication history, monitor project progress, manage milestones, and coordinate with the development team to ensure timely project delivery. |
+| **CEO / Leadership** | View company-wide dashboards, monitor sales performance, analyze revenue and conversion rates, track business growth, and use reports to support strategic decision-making. |
+| **Administrator** | Manage user accounts, assign roles and permissions, maintain system security, configure CRM settings, and ensure data integrity and system availability. |
