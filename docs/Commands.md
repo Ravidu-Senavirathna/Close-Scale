@@ -28,8 +28,23 @@ docker-compose exec backend python manage.py createsuperuser
 docker-compose exec backend python manage.py shell
 ```
 
+# Make migrations
+```pwsd
+docker compose exec backend python manage.py makemigrations <app_name>
+```
 
-# In a separate terminal
+# Migrate
+```pwsd
+docker compose exec backend python manage.py migrate
+```
+
+# Clear Database
+```pwsd
+docker-compose down -v
+docker-compose up --build -d
+```
+
+# React Frontend
 ```pwsd
 cd d:\Close-Scale\frontend
 npm install
