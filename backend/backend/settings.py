@@ -52,12 +52,6 @@ INSTALLED_APPS = [
     # Third-party: storage (cloudinary_storage BEFORE staticfiles)
     "cloudinary_storage",
     "cloudinary",
-    # Third-party: auth
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
     # Third-party: API
     "rest_framework",
     "rest_framework_simplejwt",
@@ -73,8 +67,6 @@ INSTALLED_APPS = [
 # ── Custom User Model ────────────────────────────────────────────
 AUTH_USER_MODEL = "users.User"
 
-SITE_ID = 1
-
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -83,7 +75,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -219,30 +210,9 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
 }
 
-# Google OAuth2 (django-allauth)
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-        "APP": {
-            "client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
-            "secret": os.environ.get("GOOGLE_CLIENT_SECRET", ""),
-            "key": "",
-        },
-    }
-}
-
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
-
-ACCOUNT_EMAIL_VERIFICATION = "none"   # skip email verification for MVP
 
 # ── CORS ─────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = [
