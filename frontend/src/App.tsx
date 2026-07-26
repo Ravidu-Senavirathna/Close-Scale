@@ -12,6 +12,7 @@ import { useAuth } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
 import DashboardStubPage from "./pages/DashboardStubPage";
+import UsersPage from "./pages/admin/UsersPage";
 
 export default function App() {
   const { currentUser, isLoading } = useAuth();
@@ -32,6 +33,11 @@ export default function App() {
       {/* Protected routes */}
       <Route element={<PrivateRoute />}>
         <Route path="/" element={<DashboardStubPage />} />
+      </Route>
+
+      {/* Admin-only routes */}
+      <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
+        <Route path="/admin/users" element={<UsersPage />} />
       </Route>
 
       {/* 404 fallback */}
