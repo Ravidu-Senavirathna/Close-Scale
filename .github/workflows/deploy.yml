@@ -1,0 +1,30 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main   # auto-deploy on every push to main
+
+jobs:
+  deploy:
+    name: Render Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render backend deploy hook
+        # Get this URL from: Render Dashboard → closescale-backend → Settings → Deploy Hook
+        # Add it as a GitHub secret named RENDER_DEPLOY_HOOK_URL
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" \
+            --fail \
+            --silent \
+            --show-error
+
+      - name: Trigger Render celery worker deploy hook
+        # Get this URL from: Render Dashboard → closescale-celery → Settings → Deploy Hook
+        # Add it as a GitHub secret named RENDER_CELERY_DEPLOY_HOOK_URL
+        run: |
+          curl -X POST "${{ secrets.RENDER_CELERY_DEPLOY_HOOK_URL }}" \
+            --fail \
+            --silent \
+            --show-error

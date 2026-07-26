@@ -1,0 +1,169 @@
+/* DashboardStubPage.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+.stub-root {
+  min-height: 100dvh;
+  background: #0d0f14;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nav */
+.stub-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 60px;
+  border-bottom: 1px solid #1e293b;
+  background: #0d0f14;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.stub-nav__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stub-nav__mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.stub-nav__name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+}
+
+.stub-nav__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stub-nav__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.stub-nav__username {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+.stub-nav__role {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stub-logout-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  font-family: inherit;
+}
+
+.stub-logout-btn:hover {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+/* Body */
+.stub-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.stub-card {
+  max-width: 520px;
+  text-align: center;
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.stub-card__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.stub-card h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  background: linear-gradient(135deg, #f1f5f9, #a5b4fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.03em;
+}
+
+.stub-card p {
+  color: #94a3b8;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+}
+
+.stub-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.badge--done {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #86efac;
+}
+
+.badge--next {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  color: #a5b4fc;
+}
