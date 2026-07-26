@@ -25,7 +25,6 @@ django-celery-beat==2.8.1
 
 # ── Authentication ────────────────────────────────────────────────
 djangorestframework-simplejwt==5.5.0
-django-allauth[socialaccount]==65.9.0
 
 # ── File Storage (Cloudinary) ─────────────────────────────────────
 cloudinary==1.42.1
