@@ -45,6 +45,15 @@ export default function DashboardStubPage() {
         <div className="stub-card">
           <div className="stub-card__icon">🚀</div>
           <h1>You're in!</h1>
+
+          {currentUser?.role === "ADMIN" && (
+            <button
+              className="stub-btn-primary"
+              onClick={() => navigate("/admin/users")}
+            >
+              Go to User Management
+            </button>
+          )}
         </div>
       </main>
     </div>
