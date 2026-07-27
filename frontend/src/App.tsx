@@ -12,6 +12,11 @@ import { useAuth } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
 import DashboardStubPage from "./pages/DashboardStubPage";
+import AppLayout from "./components/Layout/AppLayout";
+import ContactList from "./pages/Contacts/ContactList";
+import ContactDetail from "./pages/Contacts/ContactDetail";
+import OrganizationList from "./pages/Organizations/OrganizationList";
+import OrganizationDetail from "./pages/Organizations/OrganizationDetail";
 
 export default function App() {
   const { currentUser, isLoading } = useAuth();
@@ -31,7 +36,13 @@ export default function App() {
 
       {/* Protected routes */}
       <Route element={<PrivateRoute />}>
-        <Route path="/" element={<DashboardStubPage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<DashboardStubPage />} />
+          <Route path="/contacts" element={<ContactList />} />
+          <Route path="/contacts/:id" element={<ContactDetail />} />
+          <Route path="/organizations" element={<OrganizationList />} />
+          <Route path="/organizations/:id" element={<OrganizationDetail />} />
+        </Route>
       </Route>
 
       {/* 404 fallback */}
