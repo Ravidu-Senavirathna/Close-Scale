@@ -26,4 +26,7 @@ urlpatterns = [
 
     # ── Core API (health check, documents, future epics) ───────────
     path("api/", include("api.urls")),
+    
+    # ── Contacts & Organizations (Epic 2) ──────────────────────────
+    path("api/", include("contacts.urls")),
 ]

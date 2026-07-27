@@ -41,7 +41,22 @@ class Document(models.Model):
     # These will be migrated to ForeignKeys in Epic 2–7 migrations.
     related_lead_id = models.PositiveIntegerField(null=True, blank=True, db_index=True)
     related_deal_id = models.PositiveIntegerField(null=True, blank=True, db_index=True)
-    related_contact_id = models.PositiveIntegerField(null=True, blank=True, db_index=True)
+    
+    related_contact = models.ForeignKey(
+        "contacts.Contact", 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="documents"
+    )
+    related_organization = models.ForeignKey(
+        "contacts.Organization", 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="documents"
+    )
+    
     related_project_id = models.PositiveIntegerField(null=True, blank=True, db_index=True)
 
     # ── Timestamps ────────────────────────────────────────────────────
