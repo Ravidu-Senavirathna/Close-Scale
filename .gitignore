@@ -44,3 +44,8 @@ docker-compose.override.yml
 # ── Project config (keep AGENTS.md, block everything else) ─
 .agents/*
 # !.agents/AGENTS.md
+
+
+
+#Ignore local docs 
+docs/local/*
