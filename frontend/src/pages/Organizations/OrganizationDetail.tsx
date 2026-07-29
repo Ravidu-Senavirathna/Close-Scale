@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { organizationService, Organization } from "../../api/contacts";
+import { organizationService, type Organization } from "../../api/contacts";
 import "../dataForm.css";
 
 export default function OrganizationDetail() {

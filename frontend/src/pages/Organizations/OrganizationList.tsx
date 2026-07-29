@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { organizationService, Organization } from "../../api/contacts";
+import { organizationService, type Organization } from "../../api/contacts";
 import "../dataTable.css";
 
 export default function OrganizationList() {

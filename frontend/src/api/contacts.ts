@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./axiosClient";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -35,27 +35,27 @@ export const organizationService = {
     if (search) params.append("search", search);
     if (industry) params.append("industry", industry);
     
-    const response = await api.get<{ count: number; results: Organization[] }>(`/organizations/?${params.toString()}`);
+    const response = await api.get<{ count: number; results: Organization[] }>(`/api/organizations/?${params.toString()}`);
     return response.data;
   },
 
   async getOrganization(id: number) {
-    const response = await api.get<Organization>(`/organizations/${id}/`);
+    const response = await api.get<Organization>(`/api/organizations/${id}/`);
     return response.data;
   },
 
   async createOrganization(data: Partial<Organization>) {
-    const response = await api.post<Organization>("/organizations/", data);
+    const response = await api.post<Organization>("/api/organizations/", data);
     return response.data;
   },
 
   async updateOrganization(id: number, data: Partial<Organization>) {
-    const response = await api.patch<Organization>(`/organizations/${id}/`, data);
+    const response = await api.patch<Organization>(`/api/organizations/${id}/`, data);
     return response.data;
   },
 
   async deleteOrganization(id: number) {
-    await api.delete(`/organizations/${id}/`);
+    await api.delete(`/api/organizations/${id}/`);
   },
 };
 
@@ -67,26 +67,26 @@ export const contactService = {
     if (search) params.append("search", search);
     if (organizationId) params.append("organization", organizationId.toString());
     
-    const response = await api.get<{ count: number; results: Contact[] }>(`/contacts/?${params.toString()}`);
+    const response = await api.get<{ count: number; results: Contact[] }>(`/api/contacts/?${params.toString()}`);
     return response.data;
   },
 
   async getContact(id: number) {
-    const response = await api.get<Contact>(`/contacts/${id}/`);
+    const response = await api.get<Contact>(`/api/contacts/${id}/`);
     return response.data;
   },
 
   async createContact(data: Partial<Contact>) {
-    const response = await api.post<Contact>("/contacts/", data);
+    const response = await api.post<Contact>("/api/contacts/", data);
     return response.data;
   },
 
   async updateContact(id: number, data: Partial<Contact>) {
-    const response = await api.patch<Contact>(`/contacts/${id}/`, data);
+    const response = await api.patch<Contact>(`/api/contacts/${id}/`, data);
     return response.data;
   },
 
   async deleteContact(id: number) {
-    await api.delete(`/contacts/${id}/`);
+    await api.delete(`/api/contacts/${id}/`);
   },
 };

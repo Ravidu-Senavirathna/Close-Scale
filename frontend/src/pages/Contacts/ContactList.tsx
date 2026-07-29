@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { contactService, Contact } from "../../api/contacts";
+import { contactService, type Contact } from "../../api/contacts";
 import "../dataTable.css";
 
 export default function ContactList() {
