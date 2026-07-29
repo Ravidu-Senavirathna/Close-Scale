@@ -45,7 +45,5 @@ docker-compose.override.yml
 .agents/*
 # !.agents/AGENTS.md
 
-
-
-#Ignore local docs 
+# ── local docs ──────────────────────────────────────────
 docs/local/*
