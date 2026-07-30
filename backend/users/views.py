@@ -24,7 +24,15 @@ from .serializers import (
     UserDetailSerializer,
     UserListSerializer,
     UserUpdateSerializer,
+    ActivateResetSerializer,
+    ForgotPasswordSerializer,
+    ChangePasswordSerializer,
 )
+from .services import send_activation_email, send_password_reset_email
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from django.contrib.auth.tokens import default_token_generator
+
 
 
 class UserListCreateView(ListCreateAPIView):
@@ -41,6 +49,10 @@ class UserListCreateView(ListCreateAPIView):
             return UserCreateSerializer
         return UserListSerializer
 
+    def perform_create(self, serializer):
+        """Create the user and send an activation email."""
+        user = serializer.save()
+        send_activation_email(user)
 
 class UserRetrieveUpdateView(RetrieveUpdateAPIView):
     """
@@ -106,3 +118,125 @@ class MeView(APIView):
         """Return the authenticated user's profile."""
         serializer = UserDetailSerializer(request.user)
         return Response(serializer.data)
+
+
+class ActivateAccountView(APIView):
+    """
+    POST /api/auth/activate/
+    Activates an account by setting the initial password.
+    """
+    permission_classes = []
+
+    def post(self, request: Request) -> Response:
+        serializer = ActivateResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        uid = serializer.validated_data["uid"]
+        token = serializer.validated_data["token"]
+        new_password = serializer.validated_data["new_password"]
+        
+        try:
+            uid = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not default_token_generator.check_token(user, token):
+            return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        user.set_password(new_password)
+        user.save()
+        return Response({"detail": "Account activated successfully."}, status=status.HTTP_200_OK)
+
+
+class ForgotPasswordView(APIView):
+    """
+    POST /api/auth/forgot-password/
+    Sends a password reset email if the account exists.
+    """
+    permission_classes = []
+
+    def post(self, request: Request) -> Response:
+        serializer = ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data["email"]
+        try:
+            user = User.objects.get(email__iexact=email)
+            send_password_reset_email(user)
+        except User.DoesNotExist:
+            pass  # Do not reveal whether email exists
+            
+        return Response(
+            {"detail": "If an account with that email exists, we have sent a reset link."},
+            status=status.HTTP_200_OK
+        )
+
+
+class ResetPasswordView(APIView):
+    """
+    POST /api/auth/reset-password/
+    Sets a new password from a forgotten password link.
+    """
+    permission_classes = []
+
+    def post(self, request: Request) -> Response:
+        serializer = ActivateResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        uid = serializer.validated_data["uid"]
+        token = serializer.validated_data["token"]
+        new_password = serializer.validated_data["new_password"]
+        
+        try:
+            uid = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not default_token_generator.check_token(user, token):
+            return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        user.set_password(new_password)
+        user.save()
+        return Response({"detail": "Password reset successfully."}, status=status.HTTP_200_OK)
+
+
+class ChangePasswordView(APIView):
+    """
+    POST /api/auth/change-password/
+    Authenticated user changes their own password.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request) -> Response:
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        current_password = serializer.validated_data["current_password"]
+        new_password = serializer.validated_data["new_password"]
+        
+        if not request.user.check_password(current_password):
+            return Response({"current_password": ["Invalid password."]}, status=status.HTTP_400_BAD_REQUEST)
+            
+        request.user.set_password(new_password)
+        request.user.save()
+        return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
+
+
+class AdminTriggerResetView(APIView):
+    """
+    POST /api/users/{id}/reset-password/
+    Admin forcibly initiates a password reset for an employee.
+    """
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request: Request, pk: int) -> Response:
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            
+        send_password_reset_email(user)
+        return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
+

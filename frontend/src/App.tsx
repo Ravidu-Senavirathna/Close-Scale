@@ -13,6 +13,10 @@ import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
 import DashboardStubPage from "./pages/DashboardStubPage";
 import UsersPage from "./pages/admin/UsersPage";
+import ActivatePage from "./pages/ActivatePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 export default function App() {
   const { currentUser, isLoading } = useAuth();
@@ -29,10 +33,14 @@ export default function App() {
         path="/login"
         element={currentUser ? <Navigate to="/" replace /> : <LoginPage />}
       />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password/:uid/:token" element={<ResetPasswordPage />} />
+      <Route path="/activate/:uid/:token" element={<ActivatePage />} />
 
       {/* Protected routes */}
       <Route element={<PrivateRoute />}>
         <Route path="/" element={<DashboardStubPage />} />
+        <Route path="/settings/security" element={<ChangePasswordPage />} />
       </Route>
 
       {/* Admin-only routes */}
