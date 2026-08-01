@@ -6,7 +6,7 @@
  */
 
 import { FormEvent, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./LoginPage.css";
 
@@ -110,6 +110,11 @@ export default function LoginPage() {
           </form>
 
           <footer className="login-card__footer">
+            <p style={{ marginBottom: "1rem" }}>
+              <Link to="/forgot-password" style={{ color: "#6366f1", textDecoration: "none", fontWeight: 500 }}>
+                Forgot your password?
+              </Link>
+            </p>
             <p>
               Having trouble? Contact your{" "}
               <strong>system administrator</strong>.

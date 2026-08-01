@@ -20,8 +20,7 @@ import axiosClient from "../api/axiosClient";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type UserRole = "SALES_REP" | "MANAGER" | "CEO" | "ADMIN";
-export type Department = "SALES" | "PROJECTS" | null;
+export type UserRole = "SALES_REP" | "SALES_MANAGER" | "PROJECT_MANAGER" | "CEO" | "ADMIN";
 
 export interface CurrentUser {
   id: number;
@@ -31,7 +30,6 @@ export interface CurrentUser {
   first_name: string;
   last_name: string;
   role: UserRole;
-  department: Department;
   is_active: boolean;
   is_staff: boolean;
   date_joined: string;

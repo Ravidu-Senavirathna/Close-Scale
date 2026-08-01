@@ -18,8 +18,8 @@ services:
   - type: web
     name: closescale-backend
     runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     plan: free
     # Runs before EVERY deploy — migrates DB and collects static files
     preDeployCommand: "python manage.py migrate --no-input && python manage.py collectstatic --no-input"
@@ -60,8 +60,8 @@ services:
   - type: worker
     name: closescale-celery
     runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     plan: free
     startCommand: "celery -A backend worker -l info --concurrency=2"
     autoDeploy: true
@@ -82,3 +82,13 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+
+  # ── React Frontend (Static Site) ──────────────────────────────
+  - type: static_site
+    name: closescale-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://closescale-backend.onrender.com

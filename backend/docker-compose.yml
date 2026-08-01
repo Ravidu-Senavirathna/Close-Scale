@@ -60,7 +60,7 @@ services:
       POSTGRES_HOST: db
       REDIS_URL: redis://redis:6379/0
     volumes:
-      - ./backend:/app
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -84,7 +84,7 @@ services:
       POSTGRES_HOST: db
       REDIS_URL: redis://redis:6379/0
     volumes:
-      - ./backend:/app
+      - .:/app
     depends_on:
       db:
         condition: service_healthy

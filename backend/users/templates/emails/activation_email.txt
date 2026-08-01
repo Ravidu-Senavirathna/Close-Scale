@@ -1,0 +1,13 @@
+Welcome to Close-Scale CRM, {{ user.first_name|default:user.username }}!
+
+An administrator has created an account for you.
+
+Your Role: {{ user.get_role_display }}
+{% if user.department %}Department: {{ user.get_department_display }}{% endif %}
+
+To activate your account and set your password, please click the link below:
+{{ activation_link }}
+
+This link will expire in 24 hours.
+
+If you have any questions, please contact your administrator.

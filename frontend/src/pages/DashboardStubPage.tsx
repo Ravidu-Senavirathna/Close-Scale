@@ -30,9 +30,7 @@ export default function DashboardStubPage() {
           </span>
           <span className="stub-nav__username">{currentUser?.full_name}</span>
           <span className="stub-nav__role">
-            {currentUser?.role === "MANAGER"
-              ? `Manager · ${currentUser.department}`
-              : currentUser?.role?.replace("_", " ")}
+            {currentUser?.role?.replace("_", " ")}
           </span>
           <button id="logout-btn" className="stub-logout-btn" onClick={handleLogout}>
             Sign out
@@ -45,6 +43,15 @@ export default function DashboardStubPage() {
         <div className="stub-card">
           <div className="stub-card__icon">🚀</div>
           <h1>You're in!</h1>
+
+          {currentUser?.role === "ADMIN" && (
+            <button
+              className="stub-btn-primary"
+              onClick={() => navigate("/admin/users")}
+            >
+              Go to User Management
+            </button>
+          )}
         </div>
       </main>
     </div>

@@ -25,9 +25,9 @@ class UserListSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "email",
+            "phone_number",
             "full_name",
             "role",
-            "department",
             "is_active",
         ]
 
@@ -43,11 +43,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "email",
+            "phone_number",
             "first_name",
             "last_name",
             "full_name",
             "role",
-            "department",
             "is_active",
             "is_staff",
             "date_joined",
@@ -60,51 +60,29 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """
     Used by Admins to create new user accounts.
 
-    Requires a ``password`` field (write-only).
+    No longer requires a password. Account is created with an unusable
+    password, and the user must activate it via an email link.
     Validates the role/department invariant via the model's ``clean()``.
     """
-
-    password = serializers.CharField(
-        write_only=True,
-        required=True,
-        style={"input_type": "password"},
-        validators=[validate_password],
-    )
 
     class Meta:
         model = User
         fields = [
             "username",
             "email",
+            "phone_number",
             "first_name",
             "last_name",
             "role",
-            "department",
-            "password",
         ]
 
-    def validate(self, attrs: dict) -> dict:
-        """Enforce the Manager/department rule at the serializer level."""
-        role = attrs.get("role", User.Role.SALES_REP)
-        department = attrs.get("department")
-
-        if role == User.Role.MANAGER and not department:
-            raise serializers.ValidationError(
-                {"department": "A department (Sales or Projects) is required for Managers."}
-            )
-        if role != User.Role.MANAGER and department:
-            attrs["department"] = None
-        return attrs
-
     def create(self, validated_data: dict) -> User:
-        """Create the user with a properly hashed password."""
-        password = validated_data.pop("password")
+        """Create the user with an unusable password."""
         user: User = User(**validated_data)
-        user.set_password(password)
+        user.set_unusable_password()
         # Call save() which triggers full_clean() via our override
         user.save()
         return user
-
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     """
@@ -118,21 +96,41 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = [
             "first_name",
             "last_name",
+            "email",
+            "phone_number",
             "role",
-            "department",
             "is_active",
         ]
 
-    def validate(self, attrs: dict) -> dict:
-        """Enforce the Manager/department rule on updates."""
-        # Merge with existing instance values for partial updates
-        role = attrs.get("role", self.instance.role)  # type: ignore[union-attr]
-        department = attrs.get("department", self.instance.department)  # type: ignore[union-attr]
+class ActivateResetSerializer(serializers.Serializer):
+    """Serializer for account activation and password resets."""
 
-        if role == User.Role.MANAGER and not department:
-            raise serializers.ValidationError(
-                {"department": "A department (Sales or Projects) is required for Managers."}
-            )
-        if role != User.Role.MANAGER:
-            attrs["department"] = None
-        return attrs
+    uid = serializers.CharField(required=True)
+    token = serializers.CharField(required=True)
+    new_password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={"input_type": "password"},
+        validators=[validate_password],
+    )
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    """Serializer for forgot password requests."""
+
+    email = serializers.EmailField(required=True)
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for an authenticated user changing their own password."""
+
+    current_password = serializers.CharField(
+        write_only=True, required=True, style={"input_type": "password"}
+    )
+    new_password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={"input_type": "password"},
+        validators=[validate_password],
+    )
+

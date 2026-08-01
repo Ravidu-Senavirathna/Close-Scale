@@ -10,10 +10,7 @@ Production: Railway injects DATABASE_URL and REDIS_URL automatically.
 
 import os
 from pathlib import Path
-
-# pyrefly: ignore [missing-import]
 import dj_database_url
-# pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
 
 # ── Base Directory ────────────────────────────────────────────────
@@ -42,6 +39,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     # Channels must be before staticfiles
     "daphne",
+
     # Django built-ins
     "django.contrib.admin",
     "django.contrib.auth",
@@ -49,16 +47,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     # Third-party: storage (cloudinary_storage BEFORE staticfiles)
     "cloudinary_storage",
     "cloudinary",
+
     # Third-party: API
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
+
     # Third-party: tasks
     "django_celery_beat",
+
     # Local apps
     "users",
     "api",
@@ -109,7 +111,7 @@ CHANNEL_LAYERS = {
 }
 
 # ── Database ─────────────────────────────────────────────────────
-# Railway injects DATABASE_URL automatically when Postgres is linked.
+# Render injects DATABASE_URL automatically when Postgres is linked.
 # Locally, build the URL from individual Docker Compose env vars.
 _database_url = os.environ.get("DATABASE_URL") or (
     "postgresql://{user}:{password}@{host}:{port}/{db}".format(
@@ -233,3 +235,16 @@ USE_TZ = True
 
 # ── Misc ─────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ── Email & Auth Flows ───────────────────────────────────────────
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in ("true", "1", "yes")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@closescale.altrium.com")
+
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+# Token timeout for activation and password reset (24 hours = 86400 seconds)
+PASSWORD_RESET_TIMEOUT = int(os.environ.get("PASSWORD_RESET_TIMEOUT", 86400))
