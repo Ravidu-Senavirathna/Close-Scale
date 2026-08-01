@@ -28,6 +28,13 @@ class User(AbstractUser):
         help_text=_("The functional role of the user."),
     )
 
+    phone_number = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        help_text=_("The user's contact phone number."),
+    )
+
     # ── Convenience property ──────────────────────────────────────────
     @property
     def full_name(self) -> str:

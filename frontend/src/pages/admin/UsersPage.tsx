@@ -31,7 +31,7 @@ import "./UsersPage.css";
 const PAGE_SIZE = 10;
 
 const ROLE_LABELS: Record<UserRole, string> = {
-  SALES_REP: "Sales Rep",
+  SALES_REP: "Sales Representative",
   SALES_MANAGER: "Sales Manager",
   PROJECT_MANAGER: "Project Manager",
   CEO: "CEO / Director",
@@ -74,6 +74,7 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
     email: "",
     first_name: "",
     last_name: "",
+    phone_number: "",
     role: "SALES_REP",
     password: "",
   });
@@ -164,6 +165,19 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
             </div>
 
             <div className="up-form-group">
+              <label htmlFor="create-phone">Phone Number</label>
+              <input
+                id="create-phone"
+                type="tel"
+                name="phone_number"
+                value={form.phone_number || ""}
+                onChange={handleChange}
+                placeholder="+1 (555) 000-0000"
+                disabled={saving}
+              />
+            </div>
+
+            <div className="up-form-group">
               <label htmlFor="create-role">Role *</label>
               <select
                 id="create-role"
@@ -173,7 +187,7 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
                 required
                 disabled={saving}
               >
-                <option value="SALES_REP">Sales Rep</option>
+                <option value="SALES_REP">Sales Representative</option>
                 <option value="SALES_MANAGER">Sales Manager</option>
                 <option value="PROJECT_MANAGER">Project Manager</option>
                 <option value="CEO">CEO / Director</option>
@@ -222,6 +236,8 @@ function EditUserModal({ user, onClose, onSaved }: EditUserModalProps) {
   const [form, setForm] = useState<UpdateUserPayload & { role: UserRole }>({
     first_name: "",
     last_name: "",
+    email: user.email,
+    phone_number: user.phone_number || "",
     role: user.role,
   });
   const [saving, setSaving] = useState(false);
@@ -286,6 +302,33 @@ function EditUserModal({ user, onClose, onSaved }: EditUserModalProps) {
             </div>
 
             <div className="up-form-group">
+              <label htmlFor="edit-email">Email</label>
+              <input
+                id="edit-email"
+                type="email"
+                name="email"
+                value={form.email || ""}
+                onChange={handleChange}
+                placeholder="jane@altrium.dev"
+                required
+                disabled={saving}
+              />
+            </div>
+
+            <div className="up-form-group">
+              <label htmlFor="edit-phone">Phone Number</label>
+              <input
+                id="edit-phone"
+                type="tel"
+                name="phone_number"
+                value={form.phone_number || ""}
+                onChange={handleChange}
+                placeholder="+1 (555) 000-0000"
+                disabled={saving}
+              />
+            </div>
+
+            <div className="up-form-group">
               <label htmlFor="edit-role">Role *</label>
               <select
                 id="edit-role"
@@ -295,7 +338,7 @@ function EditUserModal({ user, onClose, onSaved }: EditUserModalProps) {
                 required
                 disabled={saving}
               >
-                <option value="SALES_REP">Sales Rep</option>
+                <option value="SALES_REP">Sales Representative</option>
                 <option value="SALES_MANAGER">Sales Manager</option>
                 <option value="PROJECT_MANAGER">Project Manager</option>
                 <option value="CEO">CEO / Director</option>
@@ -502,7 +545,7 @@ export default function UsersPage() {
             aria-label="Filter by role"
           >
             <option value="ALL">All Roles</option>
-            <option value="SALES_REP">Sales Rep</option>
+            <option value="SALES_REP">Sales Representative</option>
             <option value="SALES_MANAGER">Sales Manager</option>
             <option value="PROJECT_MANAGER">Project Manager</option>
             <option value="CEO">CEO / Director</option>
@@ -555,9 +598,10 @@ export default function UsersPage() {
                       </div>
                     </td>
 
-                    {/* Email */}
+                    {/* Email / Phone */}
                     <td style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
-                      {user.email || "—"}
+                      <div>{user.email || "—"}</div>
+                      {user.phone_number && <div style={{ marginTop: "4px" }}>{user.phone_number}</div>}
                     </td>
 
                     {/* Role */}

@@ -16,6 +16,7 @@ export interface UserListItem {
   full_name: string;
   role: UserRole;
   is_active: boolean;
+  phone_number: string | null;
 }
 
 export interface UserDetail {
@@ -28,6 +29,7 @@ export interface UserDetail {
   role: UserRole;
   is_active: boolean;
   is_staff: boolean;
+  phone_number: string | null;
   date_joined: string;
   last_login: string | null;
 }
@@ -48,6 +50,7 @@ export interface CreateUserPayload {
   last_name: string;
   role: UserRole;
   password: string;
+  phone_number?: string;
 }
 
 export interface UpdateUserPayload {
@@ -55,6 +58,8 @@ export interface UpdateUserPayload {
   last_name?: string;
   role?: UserRole;
   is_active?: boolean;
+  email?: string;
+  phone_number?: string;
 }
 
 // ── API calls ────────────────────────────────────────────────────────────────
