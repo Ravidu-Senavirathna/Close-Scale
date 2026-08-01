@@ -27,7 +27,6 @@ class UserListSerializer(serializers.ModelSerializer):
             "email",
             "full_name",
             "role",
-            "department",
             "is_active",
         ]
 
@@ -47,7 +46,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "last_name",
             "full_name",
             "role",
-            "department",
             "is_active",
             "is_staff",
             "date_joined",
@@ -73,21 +71,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "role",
-            "department",
         ]
-
-    def validate(self, attrs: dict) -> dict:
-        """Enforce the Manager/department rule at the serializer level."""
-        role = attrs.get("role", User.Role.SALES_REP)
-        department = attrs.get("department")
-
-        if role == User.Role.MANAGER and not department:
-            raise serializers.ValidationError(
-                {"department": "A department (Sales or Projects) is required for Managers."}
-            )
-        if role != User.Role.MANAGER and department:
-            attrs["department"] = None
-        return attrs
 
     def create(self, validated_data: dict) -> User:
         """Create the user with an unusable password."""
@@ -110,24 +94,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "role",
-            "department",
             "is_active",
         ]
-
-    def validate(self, attrs: dict) -> dict:
-        """Enforce the Manager/department rule on updates."""
-        # Merge with existing instance values for partial updates
-        role = attrs.get("role", self.instance.role)  # type: ignore[union-attr]
-        department = attrs.get("department", self.instance.department)  # type: ignore[union-attr]
-
-        if role == User.Role.MANAGER and not department:
-            raise serializers.ValidationError(
-                {"department": "A department (Sales or Projects) is required for Managers."}
-            )
-        if role != User.Role.MANAGER:
-            attrs["department"] = None
-        return attrs
-
 
 class ActivateResetSerializer(serializers.Serializer):
     """Serializer for account activation and password resets."""

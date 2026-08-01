@@ -57,7 +57,7 @@ class UserListCreateView(ListCreateAPIView):
 class UserRetrieveUpdateView(RetrieveUpdateAPIView):
     """
     GET   /api/users/{id}/ — retrieve a single user (Admin only).
-    PATCH /api/users/{id}/ — partial update of role / department / status (Admin only).
+    PATCH /api/users/{id}/ — partial update of role / status (Admin only).
     """
 
     queryset = User.objects.all()
