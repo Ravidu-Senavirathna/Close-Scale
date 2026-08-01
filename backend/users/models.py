@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from .managers import UserManager
 
 
 class User(AbstractUser):
@@ -22,6 +23,8 @@ class User(AbstractUser):
     class Department(models.TextChoices):
         SALES = "SALES", _("Sales")
         PROJECTS = "PROJECTS", _("Projects")
+
+    objects = UserManager()
 
     role = models.CharField(
         max_length=20,
