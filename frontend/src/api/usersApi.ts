@@ -5,7 +5,7 @@
  */
 
 import axiosClient from "./axiosClient";
-import type { Department, UserRole } from "../context/AuthContext";
+import type { UserRole } from "../context/AuthContext";
 
 // ── Response shapes ──────────────────────────────────────────────────────────
 
@@ -15,7 +15,6 @@ export interface UserListItem {
   email: string;
   full_name: string;
   role: UserRole;
-  department: Department;
   is_active: boolean;
 }
 
@@ -27,7 +26,6 @@ export interface UserDetail {
   last_name: string;
   full_name: string;
   role: UserRole;
-  department: Department;
   is_active: boolean;
   is_staff: boolean;
   date_joined: string;
@@ -49,7 +47,6 @@ export interface CreateUserPayload {
   first_name: string;
   last_name: string;
   role: UserRole;
-  department: Department;
   password: string;
 }
 
@@ -57,7 +54,6 @@ export interface UpdateUserPayload {
   first_name?: string;
   last_name?: string;
   role?: UserRole;
-  department?: Department;
   is_active?: boolean;
 }
 

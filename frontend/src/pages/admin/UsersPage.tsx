@@ -16,7 +16,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import type { UserRole, Department } from "../../context/AuthContext";
+import type { UserRole } from "../../context/AuthContext";
 import {
   listUsers,
   createUser,
@@ -32,14 +32,16 @@ const PAGE_SIZE = 10;
 
 const ROLE_LABELS: Record<UserRole, string> = {
   SALES_REP: "Sales Rep",
-  MANAGER: "Manager",
+  SALES_MANAGER: "Sales Manager",
+  PROJECT_MANAGER: "Project Manager",
   CEO: "CEO / Director",
   ADMIN: "Administrator",
 };
 
 const ROLE_BADGE_CLASS: Record<UserRole, string> = {
   ADMIN: "up-badge up-badge--admin",
-  MANAGER: "up-badge up-badge--manager",
+  SALES_MANAGER: "up-badge up-badge--manager",
+  PROJECT_MANAGER: "up-badge up-badge--manager",
   CEO: "up-badge up-badge--ceo",
   SALES_REP: "up-badge up-badge--sales",
 };
@@ -73,21 +75,14 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
     first_name: "",
     last_name: "",
     role: "SALES_REP",
-    department: null,
     password: "",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const needsDept = form.role === "MANAGER";
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
-    setForm((prev) => {
-      const next = { ...prev, [name]: value || (name === "department" ? null : value) };
-      if (next.role !== "MANAGER") next.department = null;
-      return next;
-    });
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -168,38 +163,22 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
               />
             </div>
 
-            <div className="up-form-row">
-              <div className="up-form-group">
-                <label htmlFor="create-role">Role *</label>
-                <select
-                  id="create-role"
-                  name="role"
-                  value={form.role}
-                  onChange={handleChange}
-                  required
-                  disabled={saving}
-                >
-                  <option value="SALES_REP">Sales Rep</option>
-                  <option value="MANAGER">Manager</option>
-                  <option value="CEO">CEO / Director</option>
-                  <option value="ADMIN">Administrator</option>
-                </select>
-              </div>
-              <div className="up-form-group">
-                <label htmlFor="create-department">Department {needsDept ? "*" : ""}</label>
-                <select
-                  id="create-department"
-                  name="department"
-                  value={form.department ?? ""}
-                  onChange={handleChange}
-                  required={needsDept}
-                  disabled={saving || !needsDept}
-                >
-                  <option value="">— None —</option>
-                  <option value="SALES">Sales</option>
-                  <option value="PROJECTS">Projects</option>
-                </select>
-              </div>
+            <div className="up-form-group">
+              <label htmlFor="create-role">Role *</label>
+              <select
+                id="create-role"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                required
+                disabled={saving}
+              >
+                <option value="SALES_REP">Sales Rep</option>
+                <option value="SALES_MANAGER">Sales Manager</option>
+                <option value="PROJECT_MANAGER">Project Manager</option>
+                <option value="CEO">CEO / Director</option>
+                <option value="ADMIN">Administrator</option>
+              </select>
             </div>
 
             <div className="up-form-group">
@@ -240,24 +219,17 @@ interface EditUserModalProps {
 }
 
 function EditUserModal({ user, onClose, onSaved }: EditUserModalProps) {
-  const [form, setForm] = useState<UpdateUserPayload & { role: UserRole; department: Department }>({
+  const [form, setForm] = useState<UpdateUserPayload & { role: UserRole }>({
     first_name: "",
     last_name: "",
     role: user.role,
-    department: user.department,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const needsDept = form.role === "MANAGER";
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
-    setForm((prev) => {
-      const next = { ...prev, [name]: value || (name === "department" ? null : value) };
-      if (next.role !== "MANAGER") next.department = null;
-      return next;
-    });
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -313,38 +285,22 @@ function EditUserModal({ user, onClose, onSaved }: EditUserModalProps) {
               </div>
             </div>
 
-            <div className="up-form-row">
-              <div className="up-form-group">
-                <label htmlFor="edit-role">Role *</label>
-                <select
-                  id="edit-role"
-                  name="role"
-                  value={form.role}
-                  onChange={handleChange}
-                  required
-                  disabled={saving}
-                >
-                  <option value="SALES_REP">Sales Rep</option>
-                  <option value="MANAGER">Manager</option>
-                  <option value="CEO">CEO / Director</option>
-                  <option value="ADMIN">Administrator</option>
-                </select>
-              </div>
-              <div className="up-form-group">
-                <label htmlFor="edit-department">Department {needsDept ? "*" : ""}</label>
-                <select
-                  id="edit-department"
-                  name="department"
-                  value={form.department ?? ""}
-                  onChange={handleChange}
-                  required={needsDept}
-                  disabled={saving || !needsDept}
-                >
-                  <option value="">— None —</option>
-                  <option value="SALES">Sales</option>
-                  <option value="PROJECTS">Projects</option>
-                </select>
-              </div>
+            <div className="up-form-group">
+              <label htmlFor="edit-role">Role *</label>
+              <select
+                id="edit-role"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                required
+                disabled={saving}
+              >
+                <option value="SALES_REP">Sales Rep</option>
+                <option value="SALES_MANAGER">Sales Manager</option>
+                <option value="PROJECT_MANAGER">Project Manager</option>
+                <option value="CEO">CEO / Director</option>
+                <option value="ADMIN">Administrator</option>
+              </select>
             </div>
           </div>
 
@@ -420,7 +376,7 @@ export default function UsersPage() {
     total: totalCount,
     active: allUsers.filter((u) => u.is_active).length,
     inactive: allUsers.filter((u) => !u.is_active).length,
-    managers: allUsers.filter((u) => u.role === "MANAGER").length,
+    managers: allUsers.filter((u) => u.role === "SALES_MANAGER" || u.role === "PROJECT_MANAGER").length,
   }), [allUsers, totalCount]);
 
   // ── Pagination ────────────────────────────────────────────────────────
@@ -547,7 +503,8 @@ export default function UsersPage() {
           >
             <option value="ALL">All Roles</option>
             <option value="SALES_REP">Sales Rep</option>
-            <option value="MANAGER">Manager</option>
+            <option value="SALES_MANAGER">Sales Manager</option>
+            <option value="PROJECT_MANAGER">Project Manager</option>
             <option value="CEO">CEO / Director</option>
             <option value="ADMIN">Administrator</option>
           </select>
@@ -576,7 +533,6 @@ export default function UsersPage() {
                   <th>User</th>
                   <th>Email</th>
                   <th>Role</th>
-                  <th>Department</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -609,13 +565,6 @@ export default function UsersPage() {
                       <span className={ROLE_BADGE_CLASS[user.role]}>
                         {ROLE_LABELS[user.role]}
                       </span>
-                    </td>
-
-                    {/* Department */}
-                    <td style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
-                      {user.department
-                        ? user.department.charAt(0) + user.department.slice(1).toLowerCase()
-                        : <span style={{ color: "var(--text-muted)" }}>—</span>}
                     </td>
 
                     {/* Status */}

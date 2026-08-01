@@ -30,9 +30,7 @@ export default function DashboardStubPage() {
           </span>
           <span className="stub-nav__username">{currentUser?.full_name}</span>
           <span className="stub-nav__role">
-            {currentUser?.role === "MANAGER"
-              ? `Manager · ${currentUser.department}`
-              : currentUser?.role?.replace("_", " ")}
+            {currentUser?.role?.replace("_", " ")}
           </span>
           <button id="logout-btn" className="stub-logout-btn" onClick={handleLogout}>
             Sign out
