@@ -48,18 +48,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Third-party: storage (cloudinary_storage BEFORE staticfiles)
-    "cloudinary_storage",
-    "cloudinary",
-
     # Third-party: API
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-
-    # Third-party: tasks
-    "django_celery_beat",
 
     # Local apps
     "users",
@@ -103,10 +96,7 @@ ASGI_APPLICATION = "backend.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get("REDIS_URL", "redis://localhost:6379/0")],
-        },
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
 
@@ -132,25 +122,24 @@ DATABASES = {
 }
 
 # ── Celery ───────────────────────────────────────────────────────
-CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = "UTC"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+# CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+# CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+# CELERY_ACCEPT_CONTENT = ["json"]
+# CELERY_TASK_SERIALIZER = "json"
+# CELERY_RESULT_SERIALIZER = "json"
+# CELERY_TIMEZONE = "UTC"
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # ── File Storage — Cloudinary ────────────────────────────────────
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
-}
+# CLOUDINARY_STORAGE = {
+#     "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+#     "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+#     "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+# }
 
 STORAGES = {
     "default": {
-        # Use Cloudinary for all uploaded media files (documents, PDFs, etc.)
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
         # WhiteNoise for static files (admin CSS, DRF browsable API)
@@ -159,6 +148,7 @@ STORAGES = {
 }
 
 MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # ── Static Files ─────────────────────────────────────────────────
 STATIC_URL = "/static/"
