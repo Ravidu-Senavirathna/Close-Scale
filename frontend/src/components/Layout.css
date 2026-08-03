@@ -3,16 +3,16 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #0d0f14;
-  color: #e2e8f0;
+  background-color: var(--palette-tea-green);
+  color: var(--palette-dark-blue);
   overflow: hidden;
 }
 
 .glass-effect {
-  background: rgba(30, 41, 59, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(34, 87, 122, 0.15);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -22,8 +22,8 @@
   justify-content: space-between;
   height: 64px;
   padding: 0 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: #11141d;
+  border-bottom: 1px solid rgba(34, 87, 122, 0.05);
+  background: #ffffff;
   z-index: 50;
   position: relative;
 }
@@ -32,7 +32,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #6366f1;
+  color: var(--palette-teal);
   cursor: pointer;
   transition: opacity 0.2s;
   display: flex;
@@ -46,7 +46,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  background: linear-gradient(135deg, var(--palette-teal) 0%, #a855f7 100%);
 }
 
 .logo:hover {
@@ -62,7 +62,7 @@
 .icon-btn {
   background: transparent;
   border: 1px solid transparent;
-  color: #94a3b8;
+  color: #475569;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -74,8 +74,8 @@
 }
 
 .icon-btn:hover, .icon-btn.active {
-  background: rgba(99, 102, 241, 0.1);
-  color: #818cf8;
+  background: rgba(56, 163, 165, 0.1);
+  color: var(--palette-teal);
 }
 
 .profile-container {
@@ -107,7 +107,7 @@
 
 .profile-info strong {
   font-size: 0.95rem;
-  color: #f8fafc;
+  color: var(--palette-dark-blue);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -115,7 +115,7 @@
 
 .profile-role {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #475569;
   margin-top: 2px;
   text-transform: capitalize;
 }
@@ -123,7 +123,7 @@
 .divider {
   border: 0;
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(34, 87, 122, 0.08);
   margin: 8px 0;
 }
 
@@ -135,7 +135,7 @@
   padding: 10px 12px;
   background: transparent;
   border: none;
-  color: #e2e8f0;
+  color: var(--palette-dark-blue);
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
@@ -145,7 +145,7 @@
 }
 
 .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(34, 87, 122, 0.05);
 }
 
 .dropdown-item.danger:hover {
@@ -177,7 +177,7 @@
 }
 
 .content-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(34, 87, 122, 0.15);
   border-radius: 4px;
 }
 
@@ -197,9 +197,9 @@
   width: 280px;
   padding: 24px 16px;
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(34, 87, 122, 0.05);
   z-index: 40;
-  background: #11141d; /* Solid background if prefer not fully glass */
+  background: #ffffff; /* Solid background if prefer not fully glass */
 }
 
 .right-sidebar.open {
@@ -224,10 +224,10 @@
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .nav-item:hover {
-  background: rgba(99, 102, 241, 0.1);
-  color: #818cf8;
+  background: rgba(56, 163, 165, 0.1);
+  color: var(--palette-teal);
 }

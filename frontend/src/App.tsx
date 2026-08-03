@@ -66,8 +66,8 @@ function AppLoadingScreen() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0d0f14",
-        color: "#6366f1",
+        background: "var(--palette-tea-green)",
+        color: "var(--palette-teal)",
         fontSize: "1.5rem",
       }}
     >
@@ -76,8 +76,8 @@ function AppLoadingScreen() {
           display: "inline-block",
           width: 32,
           height: 32,
-          border: "3px solid rgba(99,102,241,0.25)",
-          borderTopColor: "#6366f1",
+          border: "3px solid rgba(56,163,165,0.25)",
+          borderTopColor: "var(--palette-teal)",
           borderRadius: "50%",
           animation: "spin 0.7s linear infinite",
         }}
