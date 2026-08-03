@@ -12,6 +12,7 @@ import { useAuth } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
 import DashboardStubPage from "./pages/DashboardStubPage";
+import Layout from "./components/Layout";
 import UsersPage from "./pages/admin/UsersPage";
 import ActivatePage from "./pages/ActivatePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -39,13 +40,15 @@ export default function App() {
 
       {/* Protected routes */}
       <Route element={<PrivateRoute />}>
-        <Route path="/" element={<DashboardStubPage />} />
-        <Route path="/settings/security" element={<ChangePasswordPage />} />
-      </Route>
+        <Route element={<Layout />}>
+          <Route path="/" element={<DashboardStubPage />} />
+          <Route path="/settings/security" element={<ChangePasswordPage />} />
 
-      {/* Admin-only routes */}
-      <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
-        <Route path="/admin/users" element={<UsersPage />} />
+          {/* Admin-only routes */}
+          <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
+            <Route path="/admin/users" element={<UsersPage />} />
+          </Route>
+        </Route>
       </Route>
 
       {/* 404 fallback */}
