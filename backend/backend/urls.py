@@ -4,11 +4,11 @@ Root URL configuration for Close-Scale backend.
 
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework_simplejwt.views import (
-    TokenBlacklistView,
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
+from rest_framework_simplejwt.views import TokenVerifyView
+from users.auth_views import (
+    CookieTokenObtainPairView as TokenObtainPairView,
+    CookieTokenRefreshView as TokenRefreshView,
+    CookieTokenBlacklistView as TokenBlacklistView,
 )
 from users.views import (
     ActivateAccountView,

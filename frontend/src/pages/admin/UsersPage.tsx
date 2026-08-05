@@ -452,26 +452,7 @@ export default function UsersPage() {
   // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="up-root">
-      {/* ── Nav ── */}
-      <nav className="up-nav">
-        <div className="up-nav__left">
-          <div className="up-nav__logo">
-            <span className="up-nav__mark">A</span>
-            <span className="up-nav__brand">Altrium CRM</span>
-          </div>
-          <span className="up-nav__divider" />
-          <span className="up-nav__page-title">User Management</span>
-        </div>
-        <div className="up-nav__user">
-          <span className="up-nav__avatar">
-            {currentUser?.full_name?.[0]?.toUpperCase() ?? "A"}
-          </span>
-          <span className="up-nav__username">{currentUser?.full_name || currentUser?.username}</span>
-          <button id="nav-logout-btn" className="up-nav__logout" onClick={handleLogout}>
-            Sign out
-          </button>
-        </div>
-      </nav>
+
 
       {/* ── Main ── */}
       <main className="up-main">

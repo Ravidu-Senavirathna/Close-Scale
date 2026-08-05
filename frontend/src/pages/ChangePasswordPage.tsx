@@ -44,7 +44,7 @@ export default function ChangePasswordPage() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: "1.5rem", color: "#111827" }}>Security Settings</h2>
+      <h2 style={{ marginBottom: "1.5rem", color: "var(--palette-dark-blue)" }}>Security Settings</h2>
       
       <div style={{
         maxWidth: "500px",
@@ -130,7 +130,7 @@ export default function ChangePasswordPage() {
             disabled={loading}
             style={{
               padding: "0.75rem 1.5rem",
-              backgroundColor: "#6366f1",
+              backgroundColor: "var(--palette-teal)",
               color: "white",
               border: "none",
               borderRadius: "4px",

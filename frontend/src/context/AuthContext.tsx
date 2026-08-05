@@ -3,9 +3,8 @@
  *
  * What it manages:
  *   - currentUser  : profile returned by GET /api/users/me/
- *   - accessToken  : JWT stored in localStorage (for reference — axiosClient reads it directly)
- *   - login()      : POST /api/auth/token/ → stores tokens → loads user profile
- *   - logout()     : blacklists the refresh token → clears localStorage
+ *   - login()      : POST /api/auth/token/ → sets HttpOnly cookies → loads user profile
+ *   - logout()     : POST /api/auth/token/blacklist/ → clears HttpOnly cookies
  *   - isLoading    : true while the initial session is being restored on mount
  */
 
@@ -38,7 +37,6 @@ export interface CurrentUser {
 
 interface AuthContextValue {
   currentUser: CurrentUser | null;
-  accessToken: string | null;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -52,9 +50,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(
-    localStorage.getItem("access_token")
-  );
   const [isLoading, setIsLoading] = useState(true);
 
   /** Fetch the profile of the current user from the API. */
@@ -63,58 +58,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data } = await axiosClient.get<CurrentUser>("/api/users/me/");
       setCurrentUser(data);
     } catch {
-      // Token is stale / invalid — clear it
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      setAccessToken(null);
+      // Cookies might be invalid or missing
       setCurrentUser(null);
     }
   }, []);
 
-  /** Restore session on first load if a token already exists in storage. */
+  /** Restore session on first load by fetching profile. */
   useEffect(() => {
-    const stored = localStorage.getItem("access_token");
-    if (stored) {
-      setAccessToken(stored);
-      fetchMe().finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
-    }
+    fetchMe().finally(() => setIsLoading(false));
   }, [fetchMe]);
 
-  /** POST /api/auth/token/ → store tokens → load profile. */
+  /** POST /api/auth/token/ → stores cookies → load profile. */
   const login = useCallback(async (username: string, password: string) => {
-    const { data } = await axiosClient.post<{
-      access: string;
-      refresh: string;
-    }>("/api/auth/token/", { username, password });
-
-    localStorage.setItem("access_token", data.access);
-    localStorage.setItem("refresh_token", data.refresh);
-    setAccessToken(data.access);
+    await axiosClient.post("/api/auth/token/", { username, password });
     await fetchMe();
   }, [fetchMe]);
 
-  /** Blacklist the refresh token then clear local state. */
+  /** Blacklist the refresh token (clears cookies) then clear local state. */
   const logout = useCallback(async () => {
-    const refresh = localStorage.getItem("refresh_token");
     try {
-      if (refresh) {
-        await axiosClient.post("/api/auth/token/blacklist/", { refresh });
-      }
+      await axiosClient.post("/api/auth/token/blacklist/");
     } catch {
       // Ignore errors — clear client state regardless
     } finally {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      setAccessToken(null);
       setCurrentUser(null);
     }
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, accessToken, isLoading, login, logout }}
+      value={{ currentUser, isLoading, login, logout }}
     >
       {children}
     </AuthContext.Provider>

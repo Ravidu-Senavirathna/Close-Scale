@@ -72,7 +72,7 @@ export default function ActivatePage() {
         borderRadius: "8px",
         boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
       }}>
-        <h2 style={{ textAlign: "center", marginBottom: "1.5rem", color: "#111827" }}>Activate Your Account</h2>
+        <h2 style={{ textAlign: "center", marginBottom: "1.5rem", color: "var(--palette-dark-blue)" }}>Activate Your Account</h2>
         
         {error && (
           <div style={{ backgroundColor: "#fee2e2", color: "#991b1b", padding: "0.75rem", borderRadius: "4px", marginBottom: "1rem", fontSize: "0.875rem" }}>
@@ -125,7 +125,7 @@ export default function ActivatePage() {
             style={{
               width: "100%",
               padding: "0.75rem",
-              backgroundColor: "#6366f1",
+              backgroundColor: "var(--palette-teal)",
               color: "white",
               border: "none",
               borderRadius: "4px",
@@ -139,7 +139,7 @@ export default function ActivatePage() {
         </form>
         
         <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-          <Link to="/login" style={{ color: "#6366f1", textDecoration: "none", fontSize: "0.875rem" }}>
+          <Link to="/login" style={{ color: "var(--palette-teal)", textDecoration: "none", fontSize: "0.875rem" }}>
             Back to login
           </Link>
         </div>
