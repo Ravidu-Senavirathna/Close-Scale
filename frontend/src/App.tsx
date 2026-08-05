@@ -12,6 +12,12 @@ import { useAuth } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
 import DashboardStubPage from "./pages/DashboardStubPage";
+import Layout from "./components/Layout";
+import UsersPage from "./pages/admin/UsersPage";
+import ActivatePage from "./pages/ActivatePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 export default function App() {
   const { currentUser, isLoading } = useAuth();
@@ -28,10 +34,21 @@ export default function App() {
         path="/login"
         element={currentUser ? <Navigate to="/" replace /> : <LoginPage />}
       />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password/:uid/:token" element={<ResetPasswordPage />} />
+      <Route path="/activate/:uid/:token" element={<ActivatePage />} />
 
       {/* Protected routes */}
       <Route element={<PrivateRoute />}>
-        <Route path="/" element={<DashboardStubPage />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<DashboardStubPage />} />
+          <Route path="/settings/security" element={<ChangePasswordPage />} />
+
+          {/* Admin-only routes */}
+          <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
+            <Route path="/admin/users" element={<UsersPage />} />
+          </Route>
+        </Route>
       </Route>
 
       {/* 404 fallback */}
@@ -49,8 +66,8 @@ function AppLoadingScreen() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0d0f14",
-        color: "#6366f1",
+        background: "var(--palette-tea-green)",
+        color: "var(--palette-teal)",
         fontSize: "1.5rem",
       }}
     >
@@ -59,8 +76,8 @@ function AppLoadingScreen() {
           display: "inline-block",
           width: 32,
           height: 32,
-          border: "3px solid rgba(99,102,241,0.25)",
-          borderTopColor: "#6366f1",
+          border: "3px solid rgba(56,163,165,0.25)",
+          borderTopColor: "var(--palette-teal)",
           borderRadius: "50%",
           animation: "spin 0.7s linear infinite",
         }}

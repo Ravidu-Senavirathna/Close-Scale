@@ -1,12 +1,5 @@
-/**
- * LoginPage — email/password authentication.
- *
- * - Calls POST /api/auth/token/ via the AuthContext login() action.
- * - After success, redirects to the page the user was trying to reach (or "/").
- */
-
 import { FormEvent, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./LoginPage.css";
 
@@ -37,28 +30,22 @@ export default function LoginPage() {
 
   return (
     <div className="login-root">
-      {/* Left panel — branding */}
+      {/* Left panel — branding and illustration */}
       <aside className="login-brand">
-        <div className="login-brand__inner">
-          <div className="login-logo">
-            <span className="login-logo__mark">A</span>
-          </div>
-          <h1 className="login-brand__title">Altrium CRM</h1>
-          <p className="login-brand__subtitle">
-            The complete client lifecycle platform for modern software teams.
-          </p>
+        <div className="brand-logo-container">
+          <img src="/logo.png" alt="Close - Scale Logo" className="brand-logo" />
         </div>
-        <div className="login-brand__glow" aria-hidden="true" />
+        <div className="brand-illustration-container">
+          <img src="/reception.png" alt="Reception Illustration" className="brand-illustration" />
+        </div>
       </aside>
 
       {/* Right panel — form */}
       <main className="login-form-panel">
         <div className="login-card">
           <header className="login-card__header">
-            <h2>Welcome back</h2>
-            <p>Sign in to your Altrium workspace</p>
+            <h2>Welcome Back</h2>
           </header>
-
 
           <form onSubmit={handleSubmit} className="login-form" noValidate>
             <div className="form-group">
@@ -67,7 +54,7 @@ export default function LoginPage() {
                 id="login-username"
                 type="text"
                 autoComplete="username"
-                placeholder="your.username"
+                placeholder="your-username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -81,7 +68,7 @@ export default function LoginPage() {
                 id="login-password"
                 type="password"
                 autoComplete="current-password"
-                placeholder="••••••••"
+                placeholder="*************"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -104,16 +91,15 @@ export default function LoginPage() {
               {loading ? (
                 <span className="btn-spinner" aria-label="Signing in…" />
               ) : (
-                "Sign in"
+                "Sign In"
               )}
             </button>
           </form>
 
           <footer className="login-card__footer">
-            <p>
-              Having trouble? Contact your{" "}
-              <strong>system administrator</strong>.
-            </p>
+            <Link to="/forgot-password" style={{ color: "inherit", textDecoration: "none", fontSize: "0.9rem" }}>
+              Forgot your password?
+            </Link>
           </footer>
         </div>
       </main>

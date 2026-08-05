@@ -17,18 +17,9 @@ daphne==4.1.2
 
 # ── Django Channels (WebSockets / real-time) ──────────────────────
 channels==4.2.2
-channels-redis==4.2.1
-
-# ── Celery (Background tasks) ─────────────────────────────────────
-celery[redis]==5.5.3
-django-celery-beat==2.8.1
-
 # ── Authentication ────────────────────────────────────────────────
 djangorestframework-simplejwt==5.5.0
 
-# ── File Storage (Cloudinary) ─────────────────────────────────────
-cloudinary==1.42.1
-django-cloudinary-storage==0.3.0
 
 # ── Static Files (Render — WhiteNoise serves static files, no separate Nginx needed) ──
 whitenoise==6.9.0
