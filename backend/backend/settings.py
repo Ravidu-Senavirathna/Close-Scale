@@ -10,10 +10,7 @@ Production: Railway injects DATABASE_URL and REDIS_URL automatically.
 
 import os
 from pathlib import Path
-
-# pyrefly: ignore [missing-import]
 import dj_database_url
-# pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
 
 # ── Base Directory ────────────────────────────────────────────────
@@ -42,6 +39,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     # Channels must be before staticfiles
     "daphne",
+
     # Django built-ins
     "django.contrib.admin",
     "django.contrib.auth",
@@ -49,16 +47,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-party: storage (cloudinary_storage BEFORE staticfiles)
-    "cloudinary_storage",
-    "cloudinary",
+
     # Third-party: API
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-    # Third-party: tasks
-    "django_celery_beat",
+
     # Local apps
     "users",
     "api",
@@ -101,15 +96,12 @@ ASGI_APPLICATION = "backend.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get("REDIS_URL", "redis://localhost:6379/0")],
-        },
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
 
 # ── Database ─────────────────────────────────────────────────────
-# Railway injects DATABASE_URL automatically when Postgres is linked.
+# Render injects DATABASE_URL automatically when Postgres is linked.
 # Locally, build the URL from individual Docker Compose env vars.
 _database_url = os.environ.get("DATABASE_URL") or (
     "postgresql://{user}:{password}@{host}:{port}/{db}".format(
@@ -130,25 +122,24 @@ DATABASES = {
 }
 
 # ── Celery ───────────────────────────────────────────────────────
-CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = "UTC"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+# CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+# CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+# CELERY_ACCEPT_CONTENT = ["json"]
+# CELERY_TASK_SERIALIZER = "json"
+# CELERY_RESULT_SERIALIZER = "json"
+# CELERY_TIMEZONE = "UTC"
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # ── File Storage — Cloudinary ────────────────────────────────────
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
-}
+# CLOUDINARY_STORAGE = {
+#     "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+#     "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+#     "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+# }
 
 STORAGES = {
     "default": {
-        # Use Cloudinary for all uploaded media files (documents, PDFs, etc.)
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
         # WhiteNoise for static files (admin CSS, DRF browsable API)
@@ -157,6 +148,7 @@ STORAGES = {
 }
 
 MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # ── Static Files ─────────────────────────────────────────────────
 STATIC_URL = "/static/"
@@ -181,7 +173,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Django REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "users.authentication.CookieJWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
@@ -233,3 +225,16 @@ USE_TZ = True
 
 # ── Misc ─────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ── Email & Auth Flows ───────────────────────────────────────────
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in ("true", "1", "yes")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@closescale.altrium.com")
+
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+# Token timeout for activation and password reset (24 hours = 86400 seconds)
+PASSWORD_RESET_TIMEOUT = int(os.environ.get("PASSWORD_RESET_TIMEOUT", 86400))

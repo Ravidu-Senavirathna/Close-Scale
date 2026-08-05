@@ -3,50 +3,19 @@
  * Will be replaced with real widgets in Epic 6 (Reporting & Dashboards).
  */
 
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./DashboardStubPage.css";
 
 export default function DashboardStubPage() {
-  const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
-
-  async function handleLogout() {
-    await logout();
-    navigate("/login", { replace: true });
-  }
+  const { currentUser } = useAuth();
 
   return (
-    <div className="stub-root">
-      {/* Top nav */}
-      <nav className="stub-nav">
-        <div className="stub-nav__logo">
-          <span className="stub-nav__mark">A</span>
-          <span className="stub-nav__name">Altrium CRM</span>
-        </div>
-        <div className="stub-nav__user">
-          <span className="stub-nav__avatar">
-            {currentUser?.full_name?.[0]?.toUpperCase() ?? "U"}
-          </span>
-          <span className="stub-nav__username">{currentUser?.full_name}</span>
-          <span className="stub-nav__role">
-            {currentUser?.role === "MANAGER"
-              ? `Manager · ${currentUser.department}`
-              : currentUser?.role?.replace("_", " ")}
-          </span>
-          <button id="logout-btn" className="stub-logout-btn" onClick={handleLogout}>
-            Sign out
-          </button>
-        </div>
-      </nav>
-
-      {/* Body */}
-      <main className="stub-body">
-        <div className="stub-card">
-          <div className="stub-card__icon">🚀</div>
-          <h1>You're in!</h1>
-        </div>
-      </main>
+    <div style={{ padding: "8px" }}>
+      <h2 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#f8fafc" }}>
+        Welcome, {currentUser?.full_name || currentUser?.username}!
+      </h2>
+      <p style={{ color: "#94a3b8", marginTop: "12px", fontSize: "1rem" }}>
+        Select an option from the sidebar to get started, or wait for dashboard widgets in Epic 6.
+      </p>
     </div>
   );
 }

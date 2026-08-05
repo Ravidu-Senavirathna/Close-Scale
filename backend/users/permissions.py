@@ -25,26 +25,24 @@ class IsSalesRep(BasePermission):
 
 
 class IsSalesManager(BasePermission):
-    """Grants access to Managers in the Sales department."""
+    """Grants access to Sales Managers."""
 
     def has_permission(self, request, view) -> bool:
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role == User.Role.MANAGER
-            and request.user.department == User.Department.SALES
+            and request.user.role == User.Role.SALES_MANAGER
         )
 
 
 class IsProjectManager(BasePermission):
-    """Grants access to Managers in the Projects department."""
+    """Grants access to Project Managers."""
 
     def has_permission(self, request, view) -> bool:
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role == User.Role.MANAGER
-            and request.user.department == User.Department.PROJECTS
+            and request.user.role == User.Role.PROJECT_MANAGER
         )
 
 
@@ -55,7 +53,7 @@ class IsManager(BasePermission):
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role == User.Role.MANAGER
+            and request.user.role in (User.Role.SALES_MANAGER, User.Role.PROJECT_MANAGER)
         )
 
 
@@ -88,7 +86,7 @@ class IsAdminOrManager(BasePermission):
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role in (User.Role.ADMIN, User.Role.MANAGER)
+            and request.user.role in (User.Role.ADMIN, User.Role.SALES_MANAGER, User.Role.PROJECT_MANAGER)
         )
 
 
@@ -101,4 +99,4 @@ class IsAdminOrSalesManager(BasePermission):
             return False
         if user.role == User.Role.ADMIN:
             return True
-        return user.role == User.Role.MANAGER and user.department == User.Department.SALES
+        return user.role == User.Role.SALES_MANAGER

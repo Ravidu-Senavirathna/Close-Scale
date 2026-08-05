@@ -1,4 +1,12 @@
 /* Close-Scale — global reset & base styles */
+:root {
+  --palette-dark-blue: #003249;
+  --palette-teal: #007ea7;
+  --palette-mint: #5cb6c0;
+  --palette-light-green: #9ad1d4;
+  --palette-tea-green: #ccdbdc;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -10,8 +18,8 @@ html, body, #root {
 }
 
 body {
-  background: #0d0f14;
-  color: #e2e8f0;
+  background: var(--palette-tea-green);
+  color: var(--palette-dark-blue);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
