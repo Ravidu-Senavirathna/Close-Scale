@@ -71,7 +71,9 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        if (window.location.pathname !== "/login") {
+        const publicPaths = ["/login", "/forgot-password", "/reset-password", "/activate"];
+        const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
+        if (!isPublicPath) {
           window.location.href = "/login";
         }
         return Promise.reject(refreshError);
