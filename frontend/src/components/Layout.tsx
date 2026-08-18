@@ -1,117 +1,91 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Menu, Settings, User, LogOut, X, Users, LayoutDashboard, Briefcase, FileText } from 'lucide-react';
+import { LogOut, Users, Search, Bell, Hexagon } from 'lucide-react';
 import './Layout.css';
 
 export default function Layout() {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const profileRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
 
-  // Close profile popup when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-        setIsProfileOpen(false);
-      }
+  const getInitials = (name: string | undefined, username: string | undefined) => {
+    if (name) {
+      const parts = name.split(' ');
+      if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+      return name.substring(0, 2).toUpperCase();
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    if (username) return username.substring(0, 2).toUpperCase();
+    return 'AD';
+  };
 
   return (
     <div className="layout-container">
-      {/* Top Bar */}
-      <header className="topbar">
-        <div className="topbar-left">
-          <div className="logo" onClick={() => navigate('/')}>
-            Close-Scale
+      {/* Left Sidebar */}
+      <aside className="left-sidebar">
+        <nav className="sidebar-nav">
+          <div 
+            className={`nav-item ${location.pathname === '/' ? 'active' : ''}`} 
+            onClick={() => navigate('/')}
+          >
+            <Hexagon size={18} />
+            <span>Dashboard</span>
           </div>
-        </div>
-        
-        <div className="topbar-right">
-          <div className="profile-container" ref={profileRef}>
-            <button 
-              className={`icon-btn ${isProfileOpen ? 'active' : ''}`}
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              title="Profile"
+          
+          {currentUser?.role === 'ADMIN' && (
+            <div 
+              className={`nav-item ${location.pathname.startsWith('/admin/users') ? 'active' : ''}`} 
+              onClick={() => navigate('/admin/users')}
             >
-              <User size={20} />
+              <Users size={18} />
+              <span>Users</span>
+            </div>
+          )}
+        </nav>
+        
+        <div className="sidebar-bottom">
+          <div className="user-info-section">
+            <div className="user-details">
+              <span className="user-name">{currentUser?.full_name || currentUser?.username || 'Admin User'}</span>
+              <span className="user-email">{currentUser?.email || 'admin@altrium.io'}</span>
+            </div>
+            <button className="signout-btn" onClick={handleLogout}>
+              <LogOut size={16} /> Sign out
             </button>
-            
-            {isProfileOpen && (
-              <div className="profile-popup glass-effect">
-                <div className="profile-info">
-                  <strong>{currentUser?.full_name || currentUser?.username || 'User'}</strong>
-                  <span className="profile-role">{currentUser?.role?.replace('_', ' ')}</span>
-                </div>
-                <hr className="divider" />
-                <button className="dropdown-item danger" onClick={handleLogout}>
-                  <LogOut size={16} /> Sign Out
-                </button>
-              </div>
-            )}
           </div>
-          
-          <button 
-            className="icon-btn" 
-            onClick={() => navigate('/settings')}
-            title="Settings"
-          >
-            <Settings size={20} />
-          </button>
-          
-          <button 
-            className={`icon-btn ${isSidebarOpen ? 'active' : ''}`}
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            title="Menu"
-          >
-            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
-      </header>
+      </aside>
 
       <div className="main-wrapper">
+        {/* Top Bar */}
+        <header className="topbar">
+          <div className="breadcrumb">
+            Admin / <strong>Dashboard</strong>
+          </div>
+          
+          <div className="topbar-right">
+            <button className="icon-btn" title="Search">
+              <Search size={18} />
+            </button>
+            <button className="icon-btn" title="Notifications">
+              <Bell size={18} />
+              <span className="notification-dot"></span>
+            </button>
+            <div className="user-avatar" title="Profile">
+              {getInitials(currentUser?.full_name, currentUser?.username)}
+            </div>
+          </div>
+        </header>
+
         {/* Main Content Area */}
-        <main className={`content-area ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+        <main className="content-area">
           <Outlet />
         </main>
-
-        {/* Right Sidebar (Navbar) */}
-        <aside className={`right-sidebar glass-effect ${isSidebarOpen ? 'open' : ''}`}>
-          <nav className="sidebar-nav">
-            <div className="nav-item" onClick={() => { navigate('/'); setIsSidebarOpen(false); }}>
-              <LayoutDashboard size={18} />
-              <span>Dashboard</span>
-            </div>
-            <div className="nav-item" onClick={() => { navigate('/leads'); setIsSidebarOpen(false); }}>
-              <Users size={18} />
-              <span>Leads</span>
-            </div>
-            <div className="nav-item" onClick={() => { navigate('/deals'); setIsSidebarOpen(false); }}>
-              <Briefcase size={18} />
-              <span>Deals</span>
-            </div>
-            <div className="nav-item" onClick={() => { navigate('/projects'); setIsSidebarOpen(false); }}>
-              <FileText size={18} />
-              <span>Projects</span>
-            </div>
-            {currentUser?.role === 'ADMIN' && (
-              <div className="nav-item" onClick={() => { navigate('/admin/users'); setIsSidebarOpen(false); }}>
-                <Users size={18} />
-                <span>Manage Users</span>
-              </div>
-            )}
-          </nav>
-        </aside>
       </div>
     </div>
   );

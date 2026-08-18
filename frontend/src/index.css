@@ -21,6 +21,9 @@
   --palette-brand-green: #27d962;
   --palette-brand-green-hover: #20b852;
   
+  --palette-brand-red: #f87171; /* approximate color from image */
+  --palette-brand-red-bg: #2a1b1b; /* dark red background */
+  
   --palette-border-main: #23252b;
   --palette-border-input: #282a32;
   
