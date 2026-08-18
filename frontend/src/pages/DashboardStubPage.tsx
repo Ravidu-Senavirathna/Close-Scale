@@ -1,10 +1,6 @@
-import React from "react";
-import { useAuth } from "../context/AuthContext";
 import "./DashboardStubPage.css";
 
 export default function DashboardStubPage() {
-  const { currentUser } = useAuth();
-
   return (
     <div className="dashboard-content">
       <h2 className="dashboard-greeting">
