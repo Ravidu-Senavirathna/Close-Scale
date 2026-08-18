@@ -65,7 +65,7 @@ export default function Layout() {
         {/* Top Bar */}
         <header className="topbar">
           <div className="breadcrumb">
-            Admin / <strong>Dashboard</strong>
+            Admin / <strong>{location.pathname.startsWith('/admin/users') ? 'Users' : 'Dashboard'}</strong>
           </div>
           
           <div className="topbar-right">

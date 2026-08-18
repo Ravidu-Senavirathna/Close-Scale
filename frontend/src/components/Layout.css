@@ -23,7 +23,7 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding: 0 16px;
+  padding: 64px 16px 0 16px;
   gap: 8px;
 }
 
@@ -121,6 +121,7 @@
   height: 64px;
   padding: 0 32px;
   background: transparent;
+  border-bottom: 1px solid var(--palette-border-main);
   z-index: 50;
   position: relative;
 }
@@ -189,7 +190,7 @@
 /* Content Area */
 .content-area {
   flex: 1;
-  padding: 0 32px 32px 32px;
+  padding: 32px;
   overflow-y: auto;
 }
 
