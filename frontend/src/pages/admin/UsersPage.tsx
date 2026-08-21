@@ -19,8 +19,8 @@ import "./UsersPage.css";
 const ROLE_LABELS: Record<UserRole, string> = {
   SALES_REP: "Sales Rep",
   SALES_MANAGER: "Sales Manager",
-  PROJECT_MANAGER: "Project Manager",
-  CEO: "CEO",
+  TECH_LEAD: "Tech Lead",
+  FINANCE_OFFICER: "Finance Officer",
   ADMIN: "Admin",
 };
 
@@ -28,8 +28,8 @@ const ROLE_LABELS: Record<UserRole, string> = {
 const ROLE_COLOR_CLASS: Record<UserRole, string> = {
   ADMIN: "ADMIN",
   SALES_MANAGER: "SALES_MANAGER",
-  PROJECT_MANAGER: "PROJECT_MANAGER",
-  CEO: "CEO",
+  TECH_LEAD: "TECH_LEAD",
+  FINANCE_OFFICER: "FINANCE_OFFICER",
   SALES_REP: "SALES_REP",
 };
 
@@ -129,8 +129,8 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
               <select name="role" value={form.role} onChange={handleChange} required disabled={saving}>
                 <option value="SALES_REP">Sales Rep</option>
                 <option value="SALES_MANAGER">Sales Manager</option>
-                <option value="PROJECT_MANAGER">Project Manager</option>
-                <option value="CEO">CEO</option>
+                <option value="TECH_LEAD">Tech Lead</option>
+                <option value="FINANCE_OFFICER">Finance Officer</option>
                 <option value="ADMIN">Admin</option>
               </select>
             </div>
@@ -245,8 +245,8 @@ function EditUserModal({ user, onClose, onSaved, onDelete, currentUserId }: Edit
               <select name="role" value={form.role} onChange={handleChange} required disabled={saving}>
                 <option value="SALES_REP">Sales Rep</option>
                 <option value="SALES_MANAGER">Sales Manager</option>
-                <option value="PROJECT_MANAGER">Project Manager</option>
-                <option value="CEO">CEO</option>
+                <option value="TECH_LEAD">Tech Lead</option>
+                <option value="FINANCE_OFFICER">Finance Officer</option>
                 <option value="ADMIN">Admin</option>
               </select>
             </div>

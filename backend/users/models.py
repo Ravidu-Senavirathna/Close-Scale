@@ -15,8 +15,8 @@ class User(AbstractUser):
     class Role(models.TextChoices):
         SALES_REP = "SALES_REP", _("Sales Representative")
         SALES_MANAGER = "SALES_MANAGER", _("Sales Manager")
-        PROJECT_MANAGER = "PROJECT_MANAGER", _("Project Manager")
-        CEO = "CEO", _("CEO / Directors")
+        TECH_LEAD = "TECH_LEAD", _("Tech Lead")
+        FINANCE_OFFICER = "FINANCE_OFFICER", _("Finance Officer")
         ADMIN = "ADMIN", _("Administrator")
 
     objects = UserManager()
