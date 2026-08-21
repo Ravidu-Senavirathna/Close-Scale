@@ -158,12 +158,13 @@ interface EditUserModalProps {
 }
 
 function EditUserModal({ user, onClose, onSaved, onDelete, currentUserId }: EditUserModalProps) {
-  const [form, setForm] = useState<UpdateUserPayload & { role: UserRole }>({
+  const [form, setForm] = useState<UpdateUserPayload & { role: UserRole, is_active: boolean }>({
     first_name: "",
     last_name: "",
     email: user.email,
     phone_number: user.phone_number || "",
     role: user.role,
+    is_active: user.is_active,
   });
   const [saving, setSaving] = useState(false);
   const [toggling, setToggling] = useState(false);
@@ -250,6 +251,8 @@ function EditUserModal({ user, onClose, onSaved, onDelete, currentUserId }: Edit
                 <option value="ADMIN">Admin</option>
               </select>
             </div>
+
+
           </div>
 
           <div className="up-modal__footer" style={{ justifyContent: "space-between" }}>
@@ -262,6 +265,25 @@ function EditUserModal({ user, onClose, onSaved, onDelete, currentUserId }: Edit
                 disabled={saving || toggling || user.id === currentUserId}
               >
                 Delete
+              </button>
+              <button 
+                type="button" 
+                className="btn-secondary" 
+                onClick={() => setForm(prev => ({ ...prev, is_active: !prev.is_active }))}
+                disabled={saving || toggling || user.id === currentUserId}
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                {form.is_active ? (
+                  <>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--palette-brand-green)' }} />
+                    Active
+                  </>
+                ) : (
+                  <>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--palette-text-secondary)' }} />
+                    Inactive
+                  </>
+                )}
               </button>
             </div>
             <div style={{ display: "flex", gap: "12px" }}>
