@@ -4,7 +4,7 @@ import { ArrowLeft, Building2, User, Phone, Mail, DollarSign, Calendar, Edit2 } 
 import ReactMarkdown from 'react-markdown';
 import { leadsApi } from '../api/leads';
 import type { LeadData } from '../api/leads';
-import NewLeadModal from '../components/NewLeadModal';
+
 import BadgeSelect from '../components/BadgeSelect';
 import './LeadDetailsPage.css';
 
@@ -13,7 +13,71 @@ export default function LeadDetailsPage() {
   const [lead, setLead] = useState<LeadData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
+  // Inline edit states
+  const [isEditingCompany, setIsEditingCompany] = useState(false);
+  const [isEditingContact, setIsEditingContact] = useState(false);
+  const [isEditingDeal, setIsEditingDeal] = useState(false);
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [isNotesPreview, setIsNotesPreview] = useState(false);
+  
+  // Form states for inline editing
+  const [companyForm, setCompanyForm] = useState({ company_name: '', industry: '', lead_source: '' });
+  const [contactForm, setContactForm] = useState({ contact_name: '', job_title: '', email_address: '', phone_number: '' });
+  const [dealForm, setDealForm] = useState({ estimated_value: '', currency: 'USD', assigned_to: '' });
+  const [notesForm, setNotesForm] = useState({ notes: '' });
+  const [isSaving, setIsSaving] = useState(false);
+
+  const startEditCompany = () => {
+    setCompanyForm({
+      company_name: lead?.company_name || '',
+      industry: lead?.industry || '',
+      lead_source: lead?.lead_source || ''
+    });
+    setIsEditingCompany(true);
+  };
+
+  const startEditContact = () => {
+    setContactForm({
+      contact_name: lead?.contact_name || '',
+      job_title: lead?.job_title || '',
+      email_address: lead?.email_address || '',
+      phone_number: lead?.phone_number || ''
+    });
+    setIsEditingContact(true);
+  };
+
+  const startEditDeal = () => {
+    setDealForm({
+      estimated_value: lead?.estimated_value || '0',
+      currency: lead?.currency || 'USD',
+      assigned_to: lead?.assigned_to ? String(lead?.assigned_to) : ''
+    });
+    setIsEditingDeal(true);
+  };
+
+  const startEditNotes = () => {
+    setNotesForm({
+      notes: lead?.notes || ''
+    });
+    setIsEditingNotes(true);
+    setIsNotesPreview(false);
+  };
+
+  const handleInlineSave = async (payload: any, onSuccess: () => void) => {
+    if (!lead || !id) return;
+    try {
+      setIsSaving(true);
+      const updatedLead = await leadsApi.updateLead(id, payload);
+      setLead(updatedLead);
+      onSuccess();
+    } catch (err) {
+      console.error('Failed to save inline edit', err);
+      alert('Failed to save changes.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     const fetchLead = async () => {
@@ -119,32 +183,21 @@ export default function LeadDetailsPage() {
                 { value: 'High', label: 'High Priority' }
               ]}
             />
-            <button 
-              className="btn-edit-lead" 
-              onClick={() => setIsEditModalOpen(true)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.5rem 1rem',
-                backgroundColor: 'var(--surface-light)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-light)',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: 500,
-                fontSize: '0.9rem'
-              }}
-            >
-              <Edit2 size={16} /> Edit Lead
-            </button>
           </div>
         </div>
       </div>
 
       <div className="details-grid">
         <div className="card-section">
-          <h2><Building2 size={18} /> Company Information</h2>
+          <h2>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Building2 size={18} /> Company Information
+            </span>
+            
+              <button className="btn-edit-section" onClick={startEditCompany} title="Edit Company Information">
+                <Edit2 size={14} className="edit-icon" />
+              </button>
+          </h2>
           <div className="info-list">
             <div className="info-item">
               <span className="label">Company Name</span>
@@ -162,7 +215,15 @@ export default function LeadDetailsPage() {
         </div>
 
         <div className="card-section">
-          <h2><User size={18} /> Contact Information</h2>
+          <h2>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <User size={18} /> Contact Information
+            </span>
+            
+              <button className="btn-edit-section" onClick={startEditContact} title="Edit Contact Information">
+                <Edit2 size={14} className="edit-icon" />
+              </button>
+          </h2>
           <div className="info-list">
             <div className="info-item">
               <span className="label">Full Name</span>
@@ -192,7 +253,15 @@ export default function LeadDetailsPage() {
         </div>
 
         <div className="card-section">
-          <h2><DollarSign size={18} /> Deal Details</h2>
+          <h2>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <DollarSign size={18} /> Deal Details
+            </span>
+            
+              <button className="btn-edit-section" onClick={startEditDeal} title="Edit Deal Details">
+                <Edit2 size={14} className="edit-icon" />
+              </button>
+          </h2>
           <div className="info-list">
             <div className="info-item">
               <span className="label">Estimated Value</span>
@@ -221,7 +290,15 @@ export default function LeadDetailsPage() {
         </div>
 
         <div className="card-section full-width">
-          <h2>Notes</h2>
+          <h2>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              Notes
+            </span>
+            
+              <button className="btn-edit-section" onClick={startEditNotes} title="Edit Notes">
+                <Edit2 size={14} className="edit-icon" />
+              </button>
+          </h2>
           <div className="notes-content">
             {lead.notes ? (
               <>
@@ -241,16 +318,136 @@ export default function LeadDetailsPage() {
         </div>
       </div>
       
-      {isEditModalOpen && (
-        <NewLeadModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onLeadCreated={(updatedLead) => {
-            setLead(updatedLead);
-          }}
-          leadToEdit={lead}
-        />
+
+      {/* Modals */}
+      {isEditingCompany && (
+        <div className="edit-modal-overlay" onClick={() => setIsEditingCompany(false)}>
+          <div className="edit-modal-container" onClick={e => e.stopPropagation()}>
+            <h3>Edit Company Information</h3>
+            <div className="form-group">
+              <label>Company Name</label>
+              <input type="text" value={companyForm.company_name} onChange={e => setCompanyForm({...companyForm, company_name: e.target.value})} className="inline-input" />
+            </div>
+            <div className="form-group">
+              <label>Industry</label>
+              <input type="text" value={companyForm.industry} onChange={e => setCompanyForm({...companyForm, industry: e.target.value})} className="inline-input" />
+            </div>
+            <div className="form-group">
+              <label>Lead Source</label>
+              <input type="text" value={companyForm.lead_source} onChange={e => setCompanyForm({...companyForm, lead_source: e.target.value})} className="inline-input" />
+            </div>
+            <div className="inline-edit-actions">
+              <button className="btn-cancel-inline" onClick={() => setIsEditingCompany(false)} disabled={isSaving}>Cancel</button>
+              <button className="btn-save-inline" onClick={() => handleInlineSave(companyForm, () => setIsEditingCompany(false))} disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
+
+      {isEditingContact && (
+        <div className="edit-modal-overlay" onClick={() => setIsEditingContact(false)}>
+          <div className="edit-modal-container" onClick={e => e.stopPropagation()}>
+            <h3>Edit Contact Information</h3>
+            <div className="form-group">
+              <label>Full Name</label>
+              <input type="text" value={contactForm.contact_name} onChange={e => setContactForm({...contactForm, contact_name: e.target.value})} className="inline-input" />
+            </div>
+            <div className="form-group">
+              <label>Job Title</label>
+              <input type="text" value={contactForm.job_title} onChange={e => setContactForm({...contactForm, job_title: e.target.value})} className="inline-input" />
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input type="email" value={contactForm.email_address} onChange={e => setContactForm({...contactForm, email_address: e.target.value})} className="inline-input" />
+            </div>
+            <div className="form-group">
+              <label>Phone</label>
+              <input type="text" value={contactForm.phone_number} onChange={e => setContactForm({...contactForm, phone_number: e.target.value})} className="inline-input" />
+            </div>
+            <div className="inline-edit-actions">
+              <button className="btn-cancel-inline" onClick={() => setIsEditingContact(false)} disabled={isSaving}>Cancel</button>
+              <button className="btn-save-inline" onClick={() => handleInlineSave(contactForm, () => setIsEditingContact(false))} disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isEditingDeal && (
+        <div className="edit-modal-overlay" onClick={() => setIsEditingDeal(false)}>
+          <div className="edit-modal-container" onClick={e => e.stopPropagation()}>
+            <h3>Edit Deal Details</h3>
+            <div className="form-group">
+              <label>Estimated Value</label>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <input type="number" value={dealForm.estimated_value} onChange={e => setDealForm({...dealForm, estimated_value: e.target.value})} className="inline-input" style={{ flex: 2 }} />
+                <select value={dealForm.currency} onChange={e => setDealForm({...dealForm, currency: e.target.value})} className="inline-input" style={{ flex: 1 }}>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="LKR">LKR</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Assigned Rep ID</label>
+              <input type="text" placeholder="Rep ID" value={dealForm.assigned_to} onChange={e => setDealForm({...dealForm, assigned_to: e.target.value})} className="inline-input" />
+            </div>
+            <div className="inline-edit-actions">
+              <button className="btn-cancel-inline" onClick={() => setIsEditingDeal(false)} disabled={isSaving}>Cancel</button>
+              <button className="btn-save-inline" onClick={() => handleInlineSave({
+                estimated_value: dealForm.estimated_value,
+                currency: dealForm.currency,
+                assigned_to: dealForm.assigned_to ? parseInt(dealForm.assigned_to) : null
+              }, () => setIsEditingDeal(false))} disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isEditingNotes && (
+        <div className="edit-modal-overlay" onClick={() => setIsEditingNotes(false)}>
+          <div className="edit-modal-container notes-modal" onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <h3 style={{ marginBottom: 0 }}>Edit Notes</h3>
+              <button 
+                type="button" 
+                className="btn-cancel-inline" 
+                style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem' }}
+                onClick={() => setIsNotesPreview(!isNotesPreview)}
+              >
+                {isNotesPreview ? 'Write' : 'Preview'}
+              </button>
+            </div>
+            
+            {isNotesPreview ? (
+              <div className="inline-textarea preview-mode markdown-notes" style={{ overflowY: 'auto', background: 'var(--surface-light, #17181c)', padding: '1rem', border: '1px solid var(--border-light)', borderRadius: '6px' }}>
+                {notesForm.notes ? <ReactMarkdown>{notesForm.notes}</ReactMarkdown> : <p className="empty-text">Nothing to preview.</p>}
+              </div>
+            ) : (
+              <textarea 
+                value={notesForm.notes} 
+                onChange={e => setNotesForm({notes: e.target.value})} 
+                className="inline-input inline-textarea" 
+                placeholder="Enter markdown notes here..."
+                rows={15}
+              />
+            )}
+            
+            <div className="inline-edit-actions">
+              <button className="btn-cancel-inline" onClick={() => setIsEditingNotes(false)} disabled={isSaving}>Cancel</button>
+              <button className="btn-save-inline" onClick={() => handleInlineSave(notesForm, () => setIsEditingNotes(false))} disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -37,6 +37,15 @@
   --palette-border-input: #282a32;
   
   --palette-error: #ff5b5b;
+
+  /* Aliases for components */
+  --text-primary: var(--palette-text-primary);
+  --text-secondary: var(--palette-text-secondary);
+  --surface-light: var(--palette-bg-panel);
+  --border-light: var(--palette-border-main);
+  --primary-light: var(--palette-role-blue);
+  --error: var(--palette-error);
+  --success: var(--palette-brand-green);
 }
 
 *, *::before, *::after {
@@ -50,8 +59,8 @@ html, body, #root {
 }
 
 body {
-  background: var(--palette-tea-green);
-  color: var(--palette-dark-blue);
+  background: var(--palette-bg-main);
+  color: var(--palette-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

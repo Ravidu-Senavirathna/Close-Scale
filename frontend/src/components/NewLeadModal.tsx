@@ -8,10 +8,11 @@ interface NewLeadModalProps {
   onClose: () => void;
   onLeadCreated: (lead: any) => void;
   leadToEdit?: any;
+  initialStep?: 1 | 2;
 }
 
-export default function NewLeadModal({ isOpen, onClose, onLeadCreated, leadToEdit }: NewLeadModalProps) {
-  const [step, setStep] = useState<1 | 2>(1);
+export default function NewLeadModal({ isOpen, onClose, onLeadCreated, leadToEdit, initialStep = 1 }: NewLeadModalProps) {
+  const [step, setStep] = useState<1 | 2>(initialStep);
   const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>('Medium');
   
   // Form state
@@ -31,7 +32,7 @@ export default function NewLeadModal({ isOpen, onClose, onLeadCreated, leadToEdi
   // Reset form when modal opens
   React.useEffect(() => {
     if (isOpen) {
-      setStep(1);
+      setStep(initialStep);
       if (leadToEdit) {
         setCompany(leadToEdit.company_name || '');
         setContact(leadToEdit.contact_name || '');
@@ -60,7 +61,7 @@ export default function NewLeadModal({ isOpen, onClose, onLeadCreated, leadToEdi
         setPhoneNumber('');
       }
     }
-  }, [isOpen, leadToEdit]);
+  }, [isOpen, leadToEdit, initialStep]);
 
   if (!isOpen) return null;
 
