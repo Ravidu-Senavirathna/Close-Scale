@@ -7,9 +7,10 @@ interface NewLeadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLeadCreated: (lead: any) => void;
+  leadToEdit?: any;
 }
 
-export default function NewLeadModal({ isOpen, onClose, onLeadCreated }: NewLeadModalProps) {
+export default function NewLeadModal({ isOpen, onClose, onLeadCreated, leadToEdit }: NewLeadModalProps) {
   const [step, setStep] = useState<1 | 2>(1);
   const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>('Medium');
   
@@ -31,20 +32,35 @@ export default function NewLeadModal({ isOpen, onClose, onLeadCreated }: NewLead
   React.useEffect(() => {
     if (isOpen) {
       setStep(1);
-      setCompany('');
-      setContact('');
-      setValue('125000');
-      setCurrency('USD');
-      setRepId('unassigned');
-      setPriority('Medium');
-      setNotes('');
-      setIndustry('');
-      setLeadSource('');
-      setJobTitle('');
-      setEmailAddress('');
-      setPhoneNumber('');
+      if (leadToEdit) {
+        setCompany(leadToEdit.company_name || '');
+        setContact(leadToEdit.contact_name || '');
+        setValue(leadToEdit.estimated_value || '125000');
+        setCurrency(leadToEdit.currency || 'USD');
+        setRepId(leadToEdit.assigned_to ? String(leadToEdit.assigned_to) : 'unassigned');
+        setPriority(leadToEdit.priority || 'Medium');
+        setNotes(leadToEdit.notes || '');
+        setIndustry(leadToEdit.industry || '');
+        setLeadSource(leadToEdit.lead_source || '');
+        setJobTitle(leadToEdit.job_title || '');
+        setEmailAddress(leadToEdit.email_address || '');
+        setPhoneNumber(leadToEdit.phone_number || '');
+      } else {
+        setCompany('');
+        setContact('');
+        setValue('125000');
+        setCurrency('USD');
+        setRepId('unassigned');
+        setPriority('Medium');
+        setNotes('');
+        setIndustry('');
+        setLeadSource('');
+        setJobTitle('');
+        setEmailAddress('');
+        setPhoneNumber('');
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, leadToEdit]);
 
   if (!isOpen) return null;
 
@@ -72,15 +88,20 @@ export default function NewLeadModal({ isOpen, onClose, onLeadCreated }: NewLead
         assigned_to: repId !== 'unassigned' ? parseInt(repId) : null,
         priority: priority,
         notes: notes || undefined,
-        status: 'New',
+        status: leadToEdit ? leadToEdit.status : 'New',
       };
 
-      const createdLead = await leadsApi.createLead(newLeadPayload);
-      onLeadCreated(createdLead);
+      let result;
+      if (leadToEdit && leadToEdit.id) {
+        result = await leadsApi.updateLead(leadToEdit.id, newLeadPayload);
+      } else {
+        result = await leadsApi.createLead(newLeadPayload);
+      }
+      onLeadCreated(result);
       onClose();
     } catch (error) {
-      console.error('Failed to create lead', error);
-      alert('Failed to create lead. Please check the console for details.');
+      console.error('Failed to save lead', error);
+      alert('Failed to save lead. Please check the console for details.');
     } finally {
       setIsSubmitting(false);
     }
@@ -229,6 +250,7 @@ export default function NewLeadModal({ isOpen, onClose, onLeadCreated }: NewLead
                     >
                       <option value="USD">USD</option>
                       <option value="EUR">EUR</option>
+                      <option value="LKR">LKR</option>
                     </select>
                   </div>
                 </div>
@@ -286,13 +308,13 @@ export default function NewLeadModal({ isOpen, onClose, onLeadCreated }: NewLead
           {step === 1 ? (
             <>
               <button className="btn-cancel" onClick={onClose}>Cancel</button>
-              <button className="btn-primary" onClick={handleNext}>Next — Deal Details →</button>
+              <button className="btn-primary" onClick={handleNext}>Next</button>
             </>
           ) : (
             <>
               <button className="btn-cancel" onClick={handleBack} disabled={isSubmitting}>← Back</button>
               <button className="btn-primary" onClick={handleSubmit} disabled={isSubmitting}>
-                {isSubmitting ? 'Creating...' : 'Create Lead'}
+                {isSubmitting ? 'Saving...' : (leadToEdit ? 'Save Changes' : 'Create Lead')}
               </button>
             </>
           )}

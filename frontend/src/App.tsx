@@ -19,6 +19,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import LeadsPage from "./pages/LeadsPage";
+import LeadDetailsPage from "./pages/LeadDetailsPage";
 
 export default function App() {
   const { currentUser, isLoading } = useAuth();
@@ -44,6 +45,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardStubPage />} />
           <Route path="/leads" element={<LeadsPage />} />
+          <Route path="/leads/:id" element={<LeadDetailsPage />} />
           <Route path="/settings/security" element={<ChangePasswordPage />} />
 
           {/* Admin-only routes */}

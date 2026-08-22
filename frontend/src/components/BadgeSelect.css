@@ -1,0 +1,73 @@
+.badge-select-container {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.badge-select-trigger:hover {
+  filter: brightness(1.1);
+}
+
+.badge-chevron {
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.badge-chevron.open {
+  transform: rotate(180deg);
+}
+
+.badge-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: var(--surface-light, #1a1f2e);
+  border: 1px solid var(--border-light, #2a3142);
+  border-radius: 8px;
+  min-width: 140px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: hidden;
+  animation: slideDown 0.15s ease-out;
+}
+
+.badge-select-option {
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text-primary, #e2e8f0);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.badge-select-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.badge-select-option.selected {
+  background: rgba(56, 163, 165, 0.15);
+  color: var(--palette-teal, #38a3a5);
+  font-weight: 500;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

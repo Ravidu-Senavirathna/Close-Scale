@@ -1,80 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import NewLeadModal from '../components/NewLeadModal';
+import BadgeSelect from '../components/BadgeSelect';
 import { leadsApi } from '../api/leads';
 import './LeadsPage.css';
 
-// Initial mock data matching the screenshot
-const initialMockLeads = [
-  {
-    id: 1,
-    company: 'Meridian Holdings',
-    contact: 'Hashmath Fazli',
-    value: '$124,000',
-    status: 'New',
-    rep: 'Ishara Fonseka',
-    awaiting: false,
-  },
-  {
-    id: 2,
-    company: 'Vantage Systems',
-    contact: 'Leo Chen',
-    value: '$87,500',
-    status: 'Contacted',
-    rep: 'Nadeesha Perera',
-    awaiting: false,
-  },
-  {
-    id: 3,
-    company: 'Orbit Retail Ltd',
-    contact: 'Michelle Tran',
-    value: '$210,000',
-    status: 'Qualified',
-    rep: 'Ishara Fonseka',
-    awaiting: false,
-  },
-  {
-    id: 4,
-    company: 'Apex Dynamics',
-    contact: 'Farhan Ali',
-    value: '$45,000',
-    status: 'Assessment',
-    rep: 'Ruwani Peris',
-    awaiting: true,
-  },
-  {
-    id: 5,
-    company: 'CloudBridge Inc.',
-    contact: 'Ananya Roy',
-    value: '$330,000',
-    status: 'Assessment',
-    rep: 'Nadeesha Perera',
-    awaiting: true,
-  },
-  {
-    id: 6,
-    company: 'NexGen Pharma',
-    contact: 'Ravidu Pasan',
-    value: '$178,000',
-    status: 'Contacted',
-    rep: 'Ishara Fonseka',
-    awaiting: false,
-  },
-  {
-    id: 7,
-    company: 'Solaris Energy',
-    contact: 'Senula Silva',
-    value: '$95,000',
-    status: 'Closed',
-    rep: 'Ruwani Peris',
-    awaiting: false,
-  },
-];
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -94,6 +31,18 @@ export default function LeadsPage() {
 
   const handleLeadCreated = (newLead: any) => {
     setLeads([newLead, ...leads]);
+  };
+
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      // Optimistic update
+      setLeads(leads.map(lead => lead.id === id ? { ...lead, status: newStatus } : lead));
+      await leadsApi.updateLead(id, { status: newStatus });
+    } catch (error) {
+      console.error('Failed to update status', error);
+      alert('Failed to update status.');
+      // Ideally we would revert on failure, but for now just reload or let user know
+    }
   };
 
   const getStatusClass = (status: string) => {
@@ -155,19 +104,36 @@ export default function LeadsPage() {
               </tr>
             ) : leads.map((lead) => {
               // Map DB fields to UI fields
-              const currencySymbol = lead.currency === 'EUR' ? '€' : '$';
+              let currencySymbol = '$';
+              if (lead.currency === 'EUR') currencySymbol = '€';
+              if (lead.currency === 'LKR') currencySymbol = 'LKR ';
+              
               const formattedValue = `${currencySymbol}${parseInt(lead.estimated_value || '0').toLocaleString()}`;
               const repName = lead.assigned_to_name || 'Unassigned';
 
               return (
-              <tr key={lead.id}>
+              <tr 
+                key={lead.id} 
+                onClick={() => navigate(`/leads/${lead.id}`)}
+                style={{ cursor: 'pointer' }}
+                className="lead-row"
+              >
                 <td className="col-company">{lead.company_name}</td>
                 <td className="col-contact">{lead.contact_name}</td>
                 <td className="col-value">{formattedValue}</td>
                 <td>
-                  <span className={`badge-status ${getStatusClass(lead.status)}`}>
-                    {lead.status}
-                  </span>
+                  <BadgeSelect
+                    value={lead.status}
+                    onChange={(newStatus) => handleStatusChange(lead.id, newStatus)}
+                    badgeClass={`badge-status ${getStatusClass(lead.status)}`}
+                    options={[
+                      { value: 'New', label: 'New' },
+                      { value: 'Contacted', label: 'Contacted' },
+                      { value: 'Qualified', label: 'Qualified' },
+                      { value: 'Assessment', label: 'Assessment' },
+                      { value: 'Closed', label: 'Closed' }
+                    ]}
+                  />
                 </td>
                 <td>
                   <div className="rep-badge">
@@ -177,10 +143,7 @@ export default function LeadsPage() {
                 </td>
                 <td>
                   <div className="action-cell">
-                    {/* Placeholder for awaiting text if needed */}
-                    <button className="btn-icon" title="Delete">
-                      <Trash2 size={14} />
-                    </button>
+                    <ArrowRight size={16} className="text-secondary" />
                   </div>
                 </td>
               </tr>
