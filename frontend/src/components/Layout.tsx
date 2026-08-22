@@ -1,7 +1,7 @@
 
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Users, Search, Bell, Hexagon } from 'lucide-react';
+import { LogOut, Users, Search, Bell, Hexagon, Target } from 'lucide-react';
 import './Layout.css';
 
 export default function Layout() {
@@ -37,6 +37,14 @@ export default function Layout() {
             <span>Dashboard</span>
           </div>
           
+          <div 
+            className={`nav-item ${location.pathname.startsWith('/leads') ? 'active' : ''}`} 
+            onClick={() => navigate('/leads')}
+          >
+            <Target size={18} />
+            <span>Leads</span>
+          </div>
+          
           {currentUser?.role === 'ADMIN' && (
             <div 
               className={`nav-item ${location.pathname.startsWith('/admin/users') ? 'active' : ''}`} 
@@ -65,7 +73,7 @@ export default function Layout() {
         {/* Top Bar */}
         <header className="topbar">
           <div className="breadcrumb">
-            Admin / <strong>{location.pathname.startsWith('/admin/users') ? 'Users' : 'Dashboard'}</strong>
+            Sales Manager / <strong>{location.pathname.startsWith('/admin/users') ? 'Users' : location.pathname.startsWith('/leads') ? 'Leads' : 'Dashboard'}</strong>
           </div>
           
           <div className="topbar-right">

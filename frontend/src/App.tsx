@@ -18,6 +18,7 @@ import ActivatePage from "./pages/ActivatePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import LeadsPage from "./pages/LeadsPage";
 
 export default function App() {
   const { currentUser, isLoading } = useAuth();
@@ -42,6 +43,7 @@ export default function App() {
       <Route element={<PrivateRoute />}>
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardStubPage />} />
+          <Route path="/leads" element={<LeadsPage />} />
           <Route path="/settings/security" element={<ChangePasswordPage />} />
 
           {/* Admin-only routes */}
