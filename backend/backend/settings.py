@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     # Local apps
     "users",
     "api",
+    "leads",
 ]
 
 # ── Custom User Model ────────────────────────────────────────────

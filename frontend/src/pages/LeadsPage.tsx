@@ -1,8 +1,11 @@
+import React, { useState, useEffect } from 'react';
 import { Search, Trash2 } from 'lucide-react';
+import NewLeadModal from '../components/NewLeadModal';
+import { leadsApi } from '../api/leads';
 import './LeadsPage.css';
 
-// Mock data matching the screenshot
-const mockLeads = [
+// Initial mock data matching the screenshot
+const initialMockLeads = [
   {
     id: 1,
     company: 'Meridian Holdings',
@@ -69,6 +72,30 @@ const mockLeads = [
 ];
 
 export default function LeadsPage() {
+  const [leads, setLeads] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        setIsLoading(true);
+        const data = await leadsApi.getLeads();
+        setLeads(data);
+      } catch (error) {
+        console.error('Failed to fetch leads', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchLeads();
+  }, []);
+
+  const handleLeadCreated = (newLead: any) => {
+    setLeads([newLead, ...leads]);
+  };
+
   const getStatusClass = (status: string) => {
     return `status-${status.toLowerCase()}`;
   };
@@ -78,9 +105,9 @@ export default function LeadsPage() {
       <div className="leads-header">
         <div className="leads-header-title">
           <h1>Leads</h1>
-          <p>{mockLeads.length} total leads in pipeline</p>
+          <p>{leads.length} total leads in pipeline</p>
         </div>
-        <button className="btn-new-lead">
+        <button className="btn-new-lead" onClick={() => setIsModalOpen(true)}>
           + New Lead
         </button>
       </div>
@@ -118,11 +145,25 @@ export default function LeadsPage() {
             </tr>
           </thead>
           <tbody>
-            {mockLeads.map((lead) => (
+            {isLoading ? (
+              <tr>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>Loading leads...</td>
+              </tr>
+            ) : leads.length === 0 ? (
+              <tr>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>No leads found. Create one!</td>
+              </tr>
+            ) : leads.map((lead) => {
+              // Map DB fields to UI fields
+              const currencySymbol = lead.currency === 'EUR' ? '€' : '$';
+              const formattedValue = `${currencySymbol}${parseInt(lead.estimated_value || '0').toLocaleString()}`;
+              const repName = lead.assigned_to_name || 'Unassigned';
+
+              return (
               <tr key={lead.id}>
-                <td className="col-company">{lead.company}</td>
-                <td className="col-contact">{lead.contact}</td>
-                <td className="col-value">{lead.value}</td>
+                <td className="col-company">{lead.company_name}</td>
+                <td className="col-contact">{lead.contact_name}</td>
+                <td className="col-value">{formattedValue}</td>
                 <td>
                   <span className={`badge-status ${getStatusClass(lead.status)}`}>
                     {lead.status}
@@ -131,22 +172,29 @@ export default function LeadsPage() {
                 <td>
                   <div className="rep-badge">
                     <span className="rep-dot"></span>
-                    {lead.rep}
+                    {repName}
                   </div>
                 </td>
                 <td>
                   <div className="action-cell">
-                    {lead.awaiting && <span className="awaiting-text">Awaiting</span>}
+                    {/* Placeholder for awaiting text if needed */}
                     <button className="btn-icon" title="Delete">
                       <Trash2 size={14} />
                     </button>
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
+
+      <NewLeadModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onLeadCreated={handleLeadCreated}
+      />
     </div>
   );
 }

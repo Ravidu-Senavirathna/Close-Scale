@@ -38,4 +38,7 @@ urlpatterns = [
 
     # ── Core API (health check, documents, future epics) ───────────
     path("api/", include("api.urls")),
+    
+    # ── Leads API ──────────────────────────────────────────────────
+    path("api/", include("leads.urls")),
 ]
