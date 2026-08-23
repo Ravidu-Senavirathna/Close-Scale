@@ -211,3 +211,23 @@ class AdminTriggerResetView(APIView):
         send_password_reset_email(user)
         return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
 
+
+class SalesRepsView(APIView):
+    """
+    GET /api/users/sales-reps/
+    Returns a lightweight list of active Sales Representatives.
+    Accessible to any authenticated user.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        sales_reps = User.objects.filter(role=User.Role.SALES_REP, is_active=True).order_by('first_name', 'last_name', 'username')
+        data = [
+            {
+                "id": rep.id,
+                "full_name": rep.full_name,
+            }
+            for rep in sales_reps
+        ]
+        return Response(data, status=status.HTTP_200_OK)
+

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, Building2, User, Phone, Mail, DollarSign, Calendar, Edit2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { leadsApi } from '../api/leads';
+import { getSalesReps } from '../api/usersApi';
 import type { LeadData } from '../api/leads';
 
 import BadgeSelect from '../components/BadgeSelect';
@@ -10,6 +12,7 @@ import './LeadDetailsPage.css';
 
 export default function LeadDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const { currentUser } = useAuth();
   const [lead, setLead] = useState<LeadData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +23,8 @@ export default function LeadDetailsPage() {
   const [isEditingDeal, setIsEditingDeal] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [isNotesPreview, setIsNotesPreview] = useState(false);
+  const [salesReps, setSalesReps] = useState<{id: number, full_name: string}[]>([]);
+
   
   // Form states for inline editing
   const [companyForm, setCompanyForm] = useState({ company_name: '', industry: '', lead_source: '' });
@@ -78,6 +83,13 @@ export default function LeadDetailsPage() {
       setIsSaving(false);
     }
   };
+
+
+  useEffect(() => {
+    if (isEditingDeal && salesReps.length === 0) {
+      getSalesReps().then(setSalesReps).catch(console.error);
+    }
+  }, [isEditingDeal, salesReps.length]);
 
   useEffect(() => {
     const fetchLead = async () => {
@@ -393,14 +405,26 @@ export default function LeadDetailsPage() {
             </div>
             <div className="form-group">
               <label>Assigned Rep ID</label>
-              <input type="text" placeholder="Rep ID" value={dealForm.assigned_to} onChange={e => setDealForm({...dealForm, assigned_to: e.target.value})} className="inline-input" />
+              <select 
+                value={dealForm.assigned_to || ''} 
+                onChange={e => setDealForm({...dealForm, assigned_to: e.target.value})} 
+                className="inline-input"
+                disabled={currentUser?.role === 'SALES_REP'}
+              >
+                <option value="">-- Unassigned --</option>
+                {salesReps.map(rep => (
+                  <option key={rep.id} value={rep.id}>
+                    {rep.full_name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="inline-edit-actions">
               <button className="btn-cancel-inline" onClick={() => setIsEditingDeal(false)} disabled={isSaving}>Cancel</button>
               <button className="btn-save-inline" onClick={() => handleInlineSave({
                 estimated_value: dealForm.estimated_value,
                 currency: dealForm.currency,
-                assigned_to: dealForm.assigned_to ? parseInt(dealForm.assigned_to) : null
+                assigned_to: dealForm.assigned_to ? parseInt(dealForm.assigned_to.toString()) : null
               }, () => setIsEditingDeal(false))} disabled={isSaving}>
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>

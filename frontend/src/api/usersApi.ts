@@ -63,6 +63,12 @@ export interface UpdateUserPayload {
 
 // ── API calls ────────────────────────────────────────────────────────────────
 
+/** GET /api/users/sales-reps/ — get lightweight list of Sales Reps (Authenticated users) */
+export async function getSalesReps(): Promise<{id: number, full_name: string}[]> {
+  const { data } = await axiosClient.get<{id: number, full_name: string}[]>("/api/users/sales-reps/");
+  return data;
+}
+
 /** GET /api/users/ — paginated list of all users (Admin only). */
 export async function listUsers(page = 1): Promise<PaginatedUsers> {
   const { data } = await axiosClient.get<PaginatedUsers>("/api/users/", {
