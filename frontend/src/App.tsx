@@ -44,9 +44,13 @@ export default function App() {
       <Route element={<PrivateRoute />}>
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardStubPage />} />
-          <Route path="/leads" element={<LeadsPage />} />
-          <Route path="/leads/:id" element={<LeadDetailsPage />} />
           <Route path="/settings/security" element={<ChangePasswordPage />} />
+
+          {/* Non-Admin routes (Leads) */}
+          <Route element={<PrivateRoute allowedRoles={["SALES_REP", "SALES_MANAGER", "TECH_LEAD", "FINANCE_OFFICER"]} />}>
+            <Route path="/leads" element={<LeadsPage />} />
+            <Route path="/leads/:id" element={<LeadDetailsPage />} />
+          </Route>
 
           {/* Admin-only routes */}
           <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>

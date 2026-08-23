@@ -37,13 +37,15 @@ export default function Layout() {
             <span>Dashboard</span>
           </div>
           
-          <div 
-            className={`nav-item ${location.pathname.startsWith('/leads') ? 'active' : ''}`} 
-            onClick={() => navigate('/leads')}
-          >
-            <Target size={18} />
-            <span>Leads</span>
-          </div>
+          {currentUser?.role !== 'ADMIN' && (
+            <div 
+              className={`nav-item ${location.pathname.startsWith('/leads') ? 'active' : ''}`} 
+              onClick={() => navigate('/leads')}
+            >
+              <Target size={18} />
+              <span>Leads</span>
+            </div>
+          )}
           
           {currentUser?.role === 'ADMIN' && (
             <div 
@@ -73,7 +75,7 @@ export default function Layout() {
         {/* Top Bar */}
         <header className="topbar">
           <div className="breadcrumb">
-            Sales Manager / <strong>{location.pathname.startsWith('/admin/users') ? 'Users' : location.pathname.startsWith('/leads') ? 'Leads' : 'Dashboard'}</strong>
+            {currentUser?.role === 'ADMIN' ? 'Admin' : 'Workspace'} / <strong>{location.pathname.startsWith('/admin/users') ? 'Users' : location.pathname.startsWith('/leads') ? 'Leads' : 'Dashboard'}</strong>
           </div>
           
           <div className="topbar-right">
