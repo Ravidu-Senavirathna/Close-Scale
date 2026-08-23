@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Building2, User, Phone, Mail, DollarSign, Calendar, Edit2 } from 'lucide-react';
+import { ArrowLeft, Building2, User, Phone, Mail, DollarSign, Calendar, Edit2, Trash2, Pencil } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { leadsApi } from '../api/leads';
 import { getSalesReps } from '../api/usersApi';
@@ -24,6 +24,7 @@ export default function LeadDetailsPage() {
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [isNotesPreview, setIsNotesPreview] = useState(false);
   const [salesReps, setSalesReps] = useState<{id: number, full_name: string}[]>([]);
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notes'>('overview');
 
   
   // Form states for inline editing
@@ -32,7 +33,9 @@ export default function LeadDetailsPage() {
   const [dealForm, setDealForm] = useState({ estimated_value: '', currency: 'USD', assigned_to: '' });
   const [notesForm, setNotesForm] = useState({ notes: '' });
   const [isSaving, setIsSaving] = useState(false);
-
+  const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
+  const [editingNoteContent, setEditingNoteContent] = useState('');
+  const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
   const startEditCompany = () => {
     setCompanyForm({
       company_name: lead?.company_name || '',
@@ -84,6 +87,77 @@ export default function LeadDetailsPage() {
     }
   };
 
+  const handleAddNote = async () => {
+    if (!id || !notesForm.notes.trim()) return;
+    try {
+      setIsSaving(true);
+      const newNote = await leadsApi.addNote(id, notesForm.notes);
+      
+      setLead(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          lead_notes: [newNote, ...(prev.lead_notes || [])]
+        };
+      });
+      setNotesForm({ notes: '' });
+      setIsAddNoteModalOpen(false);
+    } catch (err) {
+      console.error('Failed to add note', err);
+      alert('Failed to add note.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteNote = async (noteId: number) => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to delete this note?')) return;
+    
+    try {
+      await leadsApi.deleteNote(id, noteId);
+      setLead(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          lead_notes: (prev.lead_notes || []).filter(note => note.id !== noteId)
+        };
+      });
+    } catch (err: any) {
+      console.error('Failed to delete note', err);
+      if (err.response?.status === 403) {
+        alert('You can only delete your own notes.');
+      } else {
+        alert('Failed to delete note.');
+      }
+    }
+  };
+
+  const handleEditNoteSave = async (noteId: number) => {
+    if (!id || !editingNoteContent.trim()) return;
+    try {
+      setIsSaving(true);
+      const updatedNote = await leadsApi.updateNote(id, noteId, editingNoteContent);
+      setLead(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          lead_notes: (prev.lead_notes || []).map(note => note.id === noteId ? updatedNote : note)
+        };
+      });
+      setEditingNoteId(null);
+      setEditingNoteContent('');
+    } catch (err: any) {
+      console.error('Failed to update note', err);
+      if (err.response?.status === 403) {
+        alert('You can only edit your own notes.');
+      } else {
+        alert('Failed to update note.');
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (isEditingDeal && salesReps.length === 0) {
@@ -199,137 +273,235 @@ export default function LeadDetailsPage() {
         </div>
       </div>
 
-      <div className="details-grid">
-        <div className="card-section">
-          <h2>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Building2 size={18} /> Company Information
-            </span>
-            
-              <button className="btn-edit-section" onClick={startEditCompany} title="Edit Company Information">
+      <div className="tabs-container">
+        <button 
+          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          Overview
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'activity' ? 'active' : ''}`}
+          onClick={() => setActiveTab('activity')}
+        >
+          Activity
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'notes' ? 'active' : ''}`}
+          onClick={() => setActiveTab('notes')}
+        >
+          Notes
+        </button>
+      </div>
+
+      {activeTab === 'overview' && (
+        <div className="details-grid">
+          <div className="card-section">
+            <h2>
+              <span>CONTACT INFO</span>
+              <button className="btn-edit-section" onClick={() => { startEditCompany(); startEditContact(); }} title="Edit Contact Information">
                 <Edit2 size={14} className="edit-icon" />
               </button>
-          </h2>
-          <div className="info-list">
-            <div className="info-item">
-              <span className="label">Company Name</span>
-              <span className="value">{lead.company_name}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Industry</span>
-              <span className="value">{lead.industry || '—'}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Lead Source</span>
-              <span className="value">{lead.lead_source || '—'}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card-section">
-          <h2>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <User size={18} /> Contact Information
-            </span>
-            
-              <button className="btn-edit-section" onClick={startEditContact} title="Edit Contact Information">
-                <Edit2 size={14} className="edit-icon" />
-              </button>
-          </h2>
-          <div className="info-list">
-            <div className="info-item">
-              <span className="label">Full Name</span>
-              <span className="value">{lead.contact_name}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Job Title</span>
-              <span className="value">{lead.job_title || '—'}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">
-                <Mail size={14} className="inline-icon" /> Email
-              </span>
-              <span className="value">
-                <a href={`mailto:${lead.email_address}`}>{lead.email_address}</a>
-              </span>
-            </div>
-            <div className="info-item">
-              <span className="label">
-                <Phone size={14} className="inline-icon" /> Phone
-              </span>
-              <span className="value">
-                {lead.phone_number ? <a href={`tel:${lead.phone_number}`}>{lead.phone_number}</a> : '—'}
-              </span>
+            </h2>
+            <div className="info-list">
+              <div className="info-item">
+                <span className="label">Contact</span>
+                <span className="value">{lead.contact_name}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Email</span>
+                <span className="value">
+                  <a href={`mailto:${lead.email_address}`}>{lead.email_address}</a>
+                </span>
+              </div>
+              <div className="info-item">
+                <span className="label">Phone</span>
+                <span className="value">
+                  {lead.phone_number ? <a href={`tel:${lead.phone_number}`}>{lead.phone_number}</a> : '—'}
+                </span>
+              </div>
+              <div className="info-item">
+                <span className="label">Industry</span>
+                <span className="value">{lead.industry || '—'}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Source</span>
+                <span className="value">{lead.lead_source || '—'}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="card-section">
-          <h2>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <DollarSign size={18} /> Deal Details
-            </span>
-            
+          <div className="card-section">
+            <h2>
+              <span>DEAL DETAILS</span>
               <button className="btn-edit-section" onClick={startEditDeal} title="Edit Deal Details">
                 <Edit2 size={14} className="edit-icon" />
               </button>
-          </h2>
-          <div className="info-list">
-            <div className="info-item">
-              <span className="label">Estimated Value</span>
-              <span className="value highlight-value">{formattedValue}</span>
+            </h2>
+            <div className="info-list">
+              <div className="info-item horizontal">
+                <span className="label">Est. Value</span>
+                <span className="value highlight-value">{formattedValue}</span>
+              </div>
+              <div className="info-item horizontal">
+                <span className="label">Assigned To</span>
+                <span className="value">
+                  {lead.assigned_to_name || 'Unassigned'}
+                </span>
+              </div>
+              <div className="info-item horizontal">
+                <span className="label">Created</span>
+                <span className="value">
+                  {lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
+                </span>
+              </div>
+              <div className="info-item horizontal">
+                <span className="label">Last Activity</span>
+                <span className="value">
+                  {lead.updated_at ? new Date(lead.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
+                </span>
+              </div>
             </div>
-            <div className="info-item">
-              <span className="label">Assigned To</span>
-              <span className="value">
-                {lead.assigned_to_name ? (
-                  <div className="rep-badge">
-                    <span className="rep-dot"></span>
-                    {lead.assigned_to_name}
+            
+            <div className="deal-notes-snippet">
+              <span className="label">Notes</span>
+              <p className="snippet-text">
+                {lead.notes ? (lead.notes.length > 50 ? `${lead.notes.substring(0, 50)}...` : lead.notes) : 'No notes added yet.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="card-section full-width">
+            <h2>PIPELINE PROGRESS</h2>
+            <div className="pipeline-progress">
+              {['New', 'Contacted', 'Qualified', 'Assessment', 'Closed'].map((step, idx) => {
+                const steps = ['New', 'Contacted', 'Qualified', 'Assessment', 'Closed'];
+                const currentIndex = steps.indexOf(lead.status) >= 0 ? steps.indexOf(lead.status) : 0;
+                const isCompleted = idx <= currentIndex;
+                const isCurrent = idx === currentIndex;
+                
+                return (
+                  <div key={step} className={`pipeline-step ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}>
+                    <div className="step-circle">{idx + 1}</div>
+                    <div className="step-label">{step}</div>
+                    {idx < steps.length - 1 && <div className="step-line"></div>}
                   </div>
-                ) : 'Unassigned'}
-              </span>
-            </div>
-            <div className="info-item">
-              <span className="label">
-                <Calendar size={14} className="inline-icon" /> Created On
-              </span>
-              <span className="value">
-                {lead.created_at ? new Date(lead.created_at).toLocaleDateString() : '—'}
-              </span>
+                );
+              })}
             </div>
           </div>
         </div>
+      )}
 
-        <div className="card-section full-width">
-          <h2>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              Notes
-            </span>
-            
-              <button className="btn-edit-section" onClick={startEditNotes} title="Edit Notes">
-                <Edit2 size={14} className="edit-icon" />
-              </button>
-          </h2>
-          <div className="notes-content">
-            {lead.notes ? (
-              <>
-                <div className="markdown-notes">
-                  <ReactMarkdown>{lead.notes}</ReactMarkdown>
+      {activeTab === 'activity' && (
+        <div className="activity-tab-content">
+          <div className="activity-actions">
+            <button className="btn-action-green">+ Log Interaction</button>
+            <button className="btn-action-blue">+ Schedule Follow-up</button>
+          </div>
+          <div className="empty-state">
+            <p className="empty-text">No activity logged yet.</p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'notes' && (
+        <div className="notes-tab-content">
+          <div className="activity-actions" style={{ marginBottom: '1.5rem' }}>
+            <button className="btn-action-green" onClick={() => setIsAddNoteModalOpen(true)}>+ Add Note</button>
+          </div>
+          
+          <div className="notes-list">
+            {(lead.lead_notes && lead.lead_notes.length > 0) ? (
+              lead.lead_notes.map((note) => (
+                <div key={note.id} className="note-item" style={{ position: 'relative' }}>
+                  {editingNoteId !== note.id && (
+                    <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', display: 'flex', gap: '0.5rem' }}>
+                      <button 
+                        className="btn-edit-note" 
+                        onClick={() => {
+                          setEditingNoteId(note.id);
+                          setEditingNoteContent(note.content);
+                        }}
+                        title="Edit Note"
+                        style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', opacity: 0.7 }}
+                        onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                        onMouseLeave={e => e.currentTarget.style.opacity = '0.7'}
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button 
+                        className="btn-delete-note" 
+                        onClick={() => handleDeleteNote(note.id)}
+                        title="Delete Note"
+                        style={{ background: 'transparent', border: 'none', color: 'var(--error, #ef4444)', cursor: 'pointer', opacity: 0.7 }}
+                        onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                        onMouseLeave={e => e.currentTarget.style.opacity = '0.7'}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  )}
+
+                  {editingNoteId === note.id ? (
+                    <div className="notes-input-container" style={{ marginTop: '0', padding: '0', border: 'none', background: 'transparent' }}>
+                      <textarea 
+                        className="inline-textarea notes-main-textarea" 
+                        value={editingNoteContent}
+                        onChange={e => setEditingNoteContent(e.target.value)}
+                        style={{ minHeight: '100px' }}
+                      />
+                      <div className="notes-action-row" style={{ marginTop: '1rem' }}>
+                        <button 
+                          className="btn-cancel-inline" 
+                          onClick={() => {
+                            setEditingNoteId(null);
+                            setEditingNoteContent('');
+                          }} 
+                          disabled={isSaving}
+                        >
+                          Cancel
+                        </button>
+                        <button 
+                          className="btn-save-inline" 
+                          onClick={() => handleEditNoteSave(note.id)} 
+                          disabled={isSaving || !editingNoteContent.trim()}
+                        >
+                          {isSaving ? 'Saving...' : 'Save'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="markdown-notes">
+                        <ReactMarkdown>{note.content}</ReactMarkdown>
+                      </div>
+                      <div className="notes-timestamp">
+                        Added by <strong style={{ color: 'var(--text-primary)' }}>{note.author_name}</strong> on {new Date(note.created_at).toLocaleString('en-US', {
+                          month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
-                {lead.updated_at && (
-                  <div className="notes-timestamp">
-                    Last updated: {new Date(lead.updated_at).toLocaleString()}
-                  </div>
-                )}
-              </>
+              ))
             ) : (
-              <p className="empty-text">No notes provided for this lead.</p>
+              lead.notes ? (
+                <div className="note-item">
+                  <div className="markdown-notes">
+                    <ReactMarkdown>{lead.notes}</ReactMarkdown>
+                  </div>
+                  <div className="notes-timestamp">Legacy note</div>
+                </div>
+              ) : (
+                <div className="empty-state" style={{ marginTop: '3rem' }}>
+                  <p className="empty-text">No notes yet.</p>
+                </div>
+              )
             )}
           </div>
         </div>
-      </div>
-      
+      )}
 
       {/* Modals */}
       {isEditingCompany && (
@@ -472,6 +644,66 @@ export default function LeadDetailsPage() {
         </div>
       )}
 
+      {/* Add Note Modal */}
+      {isAddNoteModalOpen && (
+        <div className="edit-modal-overlay" onClick={() => setIsAddNoteModalOpen(false)}>
+          <div className="edit-modal-container notes-modal" onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ margin: 0 }}>Add Note</h3>
+              <div style={{ display: 'flex', gap: '1.5rem', marginRight: '0.5rem' }}>
+                <button 
+                  className={`tab-btn ${!isNotesPreview ? 'active' : ''}`}
+                  onClick={() => setIsNotesPreview(false)}
+                  style={{ padding: '0.25rem 0', fontSize: '0.9rem' }}
+                >Write</button>
+                <button 
+                  className={`tab-btn ${isNotesPreview ? 'active' : ''}`}
+                  onClick={() => setIsNotesPreview(true)}
+                  style={{ padding: '0.25rem 0', fontSize: '0.9rem' }}
+                >Preview</button>
+              </div>
+            </div>
+            
+            <div className="form-group" style={{ flexGrow: 1 }}>
+              {isNotesPreview ? (
+                <div className="markdown-notes" style={{ padding: '1.5rem', background: '#17181c', borderRadius: '8px', minHeight: '450px', border: '1px solid var(--border-light)', overflowY: 'auto' }}>
+                  {notesForm.notes.trim() ? <ReactMarkdown>{notesForm.notes}</ReactMarkdown> : <p className="empty-text">Nothing to preview...</p>}
+                </div>
+              ) : (
+                <textarea 
+                  className="inline-input inline-textarea" 
+                  placeholder="Type your markdown note here..."
+                  value={notesForm.notes}
+                  onChange={e => setNotesForm({notes: e.target.value})}
+                />
+              )}
+            </div>
+
+            <div className="inline-edit-actions" style={{ marginTop: '1rem' }}>
+              <button 
+                className="btn-cancel-inline" 
+                onClick={() => {
+                  setIsAddNoteModalOpen(false);
+                  setIsNotesPreview(false);
+                }} 
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn-save-inline" 
+                onClick={() => {
+                  handleAddNote();
+                  setIsNotesPreview(false);
+                }} 
+                disabled={isSaving || !notesForm.notes.trim()}
+              >
+                {isSaving ? 'Saving...' : 'Save Note'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

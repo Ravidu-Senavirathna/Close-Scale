@@ -40,3 +40,15 @@ class Lead(models.Model):
 
     def __str__(self):
         return f"{self.company_name} - {self.contact_name}"
+
+class LeadNote(models.Model):
+    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='lead_notes')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        
+    def __str__(self):
+        return f"Note for {self.lead.company_name}"
