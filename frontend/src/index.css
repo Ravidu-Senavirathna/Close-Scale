@@ -1,10 +1,30 @@
 /* Close-Scale — global reset & base styles */
 :root {
+  /* Legacy Light Theme Palette */
   --palette-dark-blue: #003249;
   --palette-teal: #007ea7;
   --palette-mint: #5cb6c0;
   --palette-light-green: #9ad1d4;
   --palette-tea-green: #ccdbdc;
+
+  /* New Dark Theme Palette */
+  --palette-bg-main: #0f1014;
+  --palette-bg-panel: #17181c;
+  --palette-bg-input: #1a1b20;
+  
+  --palette-text-primary: #ffffff;
+  --palette-text-secondary: #8c8f9b;
+  --palette-text-muted: #6a6e79;
+  --palette-text-subtle: #555964;
+  --palette-text-placeholder: #4a4d57;
+  
+  --palette-brand-green: #27d962;
+  --palette-brand-green-hover: #20b852;
+  
+  --palette-border-main: #23252b;
+  --palette-border-input: #282a32;
+  
+  --palette-error: #ff5b5b;
 }
 
 *, *::before, *::after {

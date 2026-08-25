@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { authApi } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
+import "./ResetPasswordPage.css";
 
 export default function ResetPasswordPage() {
   const { uid, token } = useParams<{ uid: string; token: string }>();
@@ -56,90 +57,54 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "#f9fafb",
-      padding: "1rem"
-    }}>
-      <div style={{
-        maxWidth: "400px",
-        width: "100%",
-        backgroundColor: "white",
-        padding: "2rem",
-        borderRadius: "8px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
-      }}>
-        <h2 style={{ textAlign: "center", marginBottom: "1.5rem", color: "var(--palette-dark-blue)" }}>Reset Your Password</h2>
+    <div className="reset-root">
+      <div className="reset-card">
+        <div className="reset-header">
+          <h2>Reset Your Password</h2>
+        </div>
         
         {error && (
-          <div style={{ backgroundColor: "#fee2e2", color: "#991b1b", padding: "0.75rem", borderRadius: "4px", marginBottom: "1rem", fontSize: "0.875rem" }}>
+          <div className="reset-error" role="alert">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block", marginBottom: "0.5rem", color: "#374151", fontSize: "0.875rem", fontWeight: 500 }}>
-              New Password
-            </label>
+        <form onSubmit={handleSubmit} className="reset-form" noValidate>
+          <div className="reset-form-group">
+            <label htmlFor="reset-password">NEW PASSWORD</label>
             <input
+              id="reset-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
               required
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "4px",
-                boxSizing: "border-box"
-              }}
             />
           </div>
 
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label style={{ display: "block", marginBottom: "0.5rem", color: "#374151", fontSize: "0.875rem", fontWeight: 500 }}>
-              Confirm New Password
-            </label>
+          <div className="reset-form-group">
+            <label htmlFor="reset-confirm-password">CONFIRM NEW PASSWORD</label>
             <input
+              id="reset-confirm-password"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
               required
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "4px",
-                boxSizing: "border-box"
-              }}
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              backgroundColor: "var(--palette-teal)",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              fontWeight: 500,
-              cursor: loading ? "not-allowed" : "pointer",
-              opacity: loading ? 0.7 : 1
-            }}
+            className="reset-btn-primary"
+            disabled={loading || !password || !confirmPassword}
           >
             {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
         
-        <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-          <Link to="/login" style={{ color: "var(--palette-teal)", textDecoration: "none", fontSize: "0.875rem" }}>
+        <div className="reset-link-container">
+          <Link to="/login" className="reset-link">
             Back to login
           </Link>
         </div>
