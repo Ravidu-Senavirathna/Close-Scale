@@ -21,6 +21,18 @@
   --palette-brand-green: #27d962;
   --palette-brand-green-hover: #20b852;
   
+  --palette-brand-red: #f87171; /* approximate color from image */
+  --palette-brand-red-bg: #2a1b1b; /* dark red background */
+  
+  --palette-role-green: #27d962;
+  --palette-role-green-bg: #1a2f24;
+  --palette-role-blue: #3b82f6;
+  --palette-role-blue-bg: #1e293b;
+  --palette-role-orange: #f59e0b;
+  --palette-role-orange-bg: #332616;
+  --palette-role-purple: #a855f7;
+  --palette-role-purple-bg: #2e1e3b;
+  
   --palette-border-main: #23252b;
   --palette-border-input: #282a32;
   

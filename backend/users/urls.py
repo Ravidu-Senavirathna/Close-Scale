@@ -5,7 +5,6 @@ from django.urls import path
 from .views import (
     AdminTriggerResetView,
     MeView,
-    UserDeactivateView,
     UserListCreateView,
     UserRetrieveUpdateView,
 )
@@ -16,6 +15,5 @@ urlpatterns = [
     # Admin CRUD
     path("", UserListCreateView.as_view(), name="user-list-create"),
     path("<int:pk>/", UserRetrieveUpdateView.as_view(), name="user-detail"),
-    path("<int:pk>/deactivate/", UserDeactivateView.as_view(), name="user-deactivate"),
     path("<int:pk>/reset-password/", AdminTriggerResetView.as_view(), name="admin-trigger-reset"),
 ]
