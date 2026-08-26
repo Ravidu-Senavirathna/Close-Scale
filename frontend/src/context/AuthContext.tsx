@@ -19,7 +19,7 @@ import axiosClient from "../api/axiosClient";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type UserRole = "SALES_REP" | "SALES_MANAGER" | "PROJECT_MANAGER" | "CEO" | "ADMIN";
+export type UserRole = "SALES_REP" | "SALES_MANAGER" | "TECH_LEAD" | "FINANCE_OFFICER" | "ADMIN";
 
 export interface CurrentUser {
   id: number;

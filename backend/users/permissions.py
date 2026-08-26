@@ -35,36 +35,36 @@ class IsSalesManager(BasePermission):
         )
 
 
-class IsProjectManager(BasePermission):
-    """Grants access to Project Managers."""
+class IsTechLead(BasePermission):
+    """Grants access to Tech Leads."""
 
     def has_permission(self, request, view) -> bool:
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role == User.Role.PROJECT_MANAGER
+            and request.user.role == User.Role.TECH_LEAD
         )
 
 
 class IsManager(BasePermission):
-    """Grants access to any Manager (Sales or Projects)."""
+    """Grants access to any Manager (Sales)."""
 
     def has_permission(self, request, view) -> bool:
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role in (User.Role.SALES_MANAGER, User.Role.PROJECT_MANAGER)
+            and request.user.role == User.Role.SALES_MANAGER
         )
 
 
-class IsCEOOrDirector(BasePermission):
-    """Grants access to CEO / Director role users."""
+class IsFinanceOfficer(BasePermission):
+    """Grants access to Finance Officers."""
 
     def has_permission(self, request, view) -> bool:
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role == User.Role.CEO
+            and request.user.role == User.Role.FINANCE_OFFICER
         )
 
 
@@ -80,13 +80,13 @@ class IsAdminUser(BasePermission):
 
 
 class IsAdminOrManager(BasePermission):
-    """Grants access to Admins and any Manager (Sales or Projects)."""
+    """Grants access to Admins and any Manager (Sales)."""
 
     def has_permission(self, request, view) -> bool:
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.user.role in (User.Role.ADMIN, User.Role.SALES_MANAGER, User.Role.PROJECT_MANAGER)
+            and request.user.role in (User.Role.ADMIN, User.Role.SALES_MANAGER)
         )
 
 
