@@ -5,7 +5,7 @@ import {
   listUsers,
   createUser,
   updateUser,
-  toggleUserActive
+  deleteUser
 } from "../../api/usersApi";
 import type {
   UserListItem,
@@ -63,7 +63,6 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
     last_name: "",
     phone_number: "",
     role: "SALES_REP",
-    password: "",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -136,10 +135,6 @@ function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
               </select>
             </div>
 
-            <div className="up-form-group">
-              <label>Temporary Password *</label>
-              <input type="password" name="password" value={form.password} onChange={handleChange} required disabled={saving} />
-            </div>
           </div>
 
           <div className="up-modal__footer">
@@ -158,11 +153,11 @@ interface EditUserModalProps {
   user: UserListItem;
   onClose: () => void;
   onSaved: () => void;
-  onToggleActive: (user: UserListItem) => Promise<void>;
+  onDelete: (user: UserListItem) => Promise<void>;
   currentUserId: number | undefined;
 }
 
-function EditUserModal({ user, onClose, onSaved, onToggleActive, currentUserId }: EditUserModalProps) {
+function EditUserModal({ user, onClose, onSaved, onDelete, currentUserId }: EditUserModalProps) {
   const [form, setForm] = useState<UpdateUserPayload & { role: UserRole }>({
     first_name: "",
     last_name: "",
@@ -192,14 +187,17 @@ function EditUserModal({ user, onClose, onSaved, onToggleActive, currentUserId }
     }
   }
 
-  async function handleToggle() {
+  async function handleDelete() {
+    if (!window.confirm(`Are you sure you want to completely delete ${user.full_name || user.username}? This cannot be undone.`)) {
+      return;
+    }
     setToggling(true);
     setError(null);
     try {
-      await onToggleActive(user);
-      onSaved(); // refresh list and close modal
+      await onDelete(user);
+      onSaved();
     } catch (err) {
-      setError("Failed to update status");
+      setError("Failed to delete user");
       setToggling(false);
     }
   }
@@ -228,6 +226,11 @@ function EditUserModal({ user, onClose, onSaved, onToggleActive, currentUserId }
             </div>
 
             <div className="up-form-group">
+              <label>Username</label>
+              <input type="text" name="username" value={user.username} disabled={true} />
+            </div>
+
+            <div className="up-form-group">
               <label>Email</label>
               <input type="email" name="email" value={form.email || ""} onChange={handleChange} required disabled={saving} />
             </div>
@@ -250,15 +253,17 @@ function EditUserModal({ user, onClose, onSaved, onToggleActive, currentUserId }
           </div>
 
           <div className="up-modal__footer" style={{ justifyContent: "space-between" }}>
-            <button 
-              type="button" 
-              className="btn-secondary" 
-              style={{ color: user.is_active ? "var(--palette-error)" : "var(--palette-brand-green)" }}
-              onClick={handleToggle}
-              disabled={saving || toggling || user.id === currentUserId}
-            >
-              {toggling ? "Wait..." : user.is_active ? "Deactivate User" : "Reactivate User"}
-            </button>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button 
+                type="button" 
+                className="btn-secondary" 
+                style={{ color: "var(--palette-error)" }}
+                onClick={handleDelete}
+                disabled={saving || toggling || user.id === currentUserId}
+              >
+                Delete
+              </button>
+            </div>
             <div style={{ display: "flex", gap: "12px" }}>
               <button type="button" className="btn-secondary" onClick={onClose} disabled={saving || toggling}>Cancel</button>
               <button type="submit" className="btn-primary" disabled={saving || toggling}>
@@ -296,8 +301,8 @@ export default function UsersPage() {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleToggleActive = async (user: UserListItem) => {
-    await toggleUserActive(user.id);
+  const handleDeleteUser = async (user: UserListItem) => {
+    await deleteUser(user.id);
   };
 
   const getInitials = (name: string, username: string) => {
@@ -308,6 +313,8 @@ export default function UsersPage() {
     }
     return username.substring(0, 2).toUpperCase();
   };
+
+
 
   return (
     <div className="up-root">
@@ -371,7 +378,7 @@ export default function UsersPage() {
             setEditTarget(null);
             fetchUsers();
           }}
-          onToggleActive={handleToggleActive}
+          onDelete={handleDeleteUser}
         />
       )}
     </div>
