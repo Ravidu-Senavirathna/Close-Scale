@@ -11,7 +11,7 @@ Endpoints:
 """
 
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -54,15 +54,16 @@ class UserListCreateView(ListCreateAPIView):
         user = serializer.save()
         send_activation_email(user)
 
-class UserRetrieveUpdateView(RetrieveUpdateAPIView):
+class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     """
-    GET   /api/users/{id}/ — retrieve a single user (Admin only).
-    PATCH /api/users/{id}/ — partial update of role / status (Admin only).
+    GET    /api/users/{id}/ — retrieve a single user (Admin only).
+    PATCH  /api/users/{id}/ — partial update of role / status (Admin only).
+    DELETE /api/users/{id}/ — permanently delete a user (Admin only).
     """
 
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsAdminUser]
-    http_method_names = ["get", "patch", "head", "options"]  # no PUT
+    http_method_names = ["get", "patch", "delete", "head", "options"]  # no PUT
 
     def get_serializer_class(self):
         if self.request.method == "PATCH":
@@ -73,36 +74,6 @@ class UserRetrieveUpdateView(RetrieveUpdateAPIView):
         """Force partial=True so all fields are optional on PATCH."""
         kwargs["partial"] = True
         return super().update(request, *args, **kwargs)
-
-
-class UserDeactivateView(APIView):
-    """
-    PATCH /api/users/{id}/deactivate/
-    Toggles the ``is_active`` flag for the target user (Admin only).
-    Returns the updated user detail.
-    """
-
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
-    def patch(self, request: Request, pk: int) -> Response:
-        """Toggle is_active on the target user."""
-        try:
-            user = User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        # Prevent admin from deactivating themselves
-        if user == request.user:
-            return Response(
-                {"detail": "You cannot deactivate your own account."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        user.is_active = not user.is_active
-        user.save(update_fields=["is_active"])
-
-        serializer = UserDetailSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MeView(APIView):

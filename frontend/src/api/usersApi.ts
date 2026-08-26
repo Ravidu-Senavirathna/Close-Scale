@@ -49,7 +49,6 @@ export interface CreateUserPayload {
   first_name: string;
   last_name: string;
   role: UserRole;
-  password: string;
   phone_number?: string;
 }
 
@@ -96,10 +95,9 @@ export async function updateUser(
   return data;
 }
 
-/** PATCH /api/users/{id}/deactivate/ — toggle is_active (Admin only). */
-export async function toggleUserActive(id: number): Promise<UserDetail> {
-  const { data } = await axiosClient.patch<UserDetail>(
-    `/api/users/${id}/deactivate/`
-  );
-  return data;
+
+
+/** DELETE /api/users/{id}/ — permanently delete user (Admin only). */
+export async function deleteUser(id: number): Promise<void> {
+  await axiosClient.delete(`/api/users/${id}/`);
 }
