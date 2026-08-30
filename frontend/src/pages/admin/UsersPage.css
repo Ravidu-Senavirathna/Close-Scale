@@ -91,8 +91,8 @@
 .user-avatar.avatar-ADMIN { background-color: var(--palette-brand-red-bg); color: var(--palette-brand-red); border: 1px solid rgba(248, 113, 113, 0.2); }
 .user-avatar.avatar-SALES_MANAGER { background-color: var(--palette-role-green-bg); color: var(--palette-role-green); border: 1px solid rgba(39, 217, 98, 0.2); }
 .user-avatar.avatar-SALES_REP { background-color: var(--palette-role-green-bg); color: var(--palette-role-green); border: 1px solid rgba(39, 217, 98, 0.2); }
-.user-avatar.avatar-PROJECT_MANAGER { background-color: var(--palette-role-orange-bg); color: var(--palette-role-orange); border: 1px solid rgba(245, 158, 11, 0.2); }
-.user-avatar.avatar-CEO { background-color: var(--palette-role-blue-bg); color: var(--palette-role-blue); border: 1px solid rgba(59, 130, 246, 0.2); }
+.user-avatar.avatar-TECH_LEAD { background-color: var(--palette-role-orange-bg); color: var(--palette-role-orange); border: 1px solid rgba(245, 158, 11, 0.2); }
+.user-avatar.avatar-FINANCE_OFFICER { background-color: var(--palette-role-blue-bg); color: var(--palette-role-blue); border: 1px solid rgba(59, 130, 246, 0.2); }
 
 /* In the mockup, avatar YS and NP are green, RP is blue, ND is red, IT is orange, SS is blue, AR is purple */
 .user-avatar.role-green { background-color: var(--palette-role-green-bg); color: var(--palette-role-green); }
@@ -135,10 +135,9 @@
 
 .role-badge.badge-SALES_MANAGER { background-color: var(--palette-role-green-bg); color: var(--palette-role-green); }
 .role-badge.badge-SALES_REP { background-color: var(--palette-role-green-bg); color: var(--palette-role-green); }
-.role-badge.badge-CEO { background-color: var(--palette-role-blue-bg); color: var(--palette-role-blue); }
-/* Let's assume Tech Lead maps to a different role or we just use CEO color for blue for now, wait there is no Tech Lead in UserRole enum, but maybe they meant CEO or something else. I will map Admin to red, PM to orange. */
+.role-badge.badge-FINANCE_OFFICER { background-color: var(--palette-role-blue-bg); color: var(--palette-role-blue); }
 .role-badge.badge-ADMIN { background-color: var(--palette-brand-red-bg); color: var(--palette-brand-red); }
-.role-badge.badge-PROJECT_MANAGER { background-color: var(--palette-role-orange-bg); color: var(--palette-role-orange); }
+.role-badge.badge-TECH_LEAD { background-color: var(--palette-role-orange-bg); color: var(--palette-role-orange); }
 /* In case of unknown role */
 .role-badge.badge-default { background-color: var(--palette-role-purple-bg); color: var(--palette-role-purple); }
 
